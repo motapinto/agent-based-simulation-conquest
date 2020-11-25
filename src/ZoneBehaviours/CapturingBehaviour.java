@@ -4,9 +4,10 @@ import agents.Zone;
 import data.MessageType;
 import data.Team;
 import data.message.PlayerZoneMessage;
-import jade.core.behaviours.TickerBehaviour;
+import sajas.core.AID;
+import sajas.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
-import jade.proto.SubscriptionResponder;
+import sajas.proto.SubscriptionResponder;
 
 import java.io.IOException;
 
@@ -132,7 +133,7 @@ public class CapturingBehaviour extends TickerBehaviour {
     private void informSubscribers(Team player, MessageType messageType){
         ACLMessage playerZoneMessage = new ACLMessage(ACLMessage.INFORM);
         try {
-            playerZoneMessage.setContentObject(new PlayerZoneMessage(player, messageType, this.zoneAgent.getAID(), this.zoneAgent.getCapturePoints()));
+            playerZoneMessage.setContentObject(new PlayerZoneMessage(player, messageType, (AID) this.zoneAgent.getAID(), this.zoneAgent.getCapturePoints()));
         } catch (IOException e) {
             e.printStackTrace();
             return;

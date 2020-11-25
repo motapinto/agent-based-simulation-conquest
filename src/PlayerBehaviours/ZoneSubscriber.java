@@ -4,11 +4,11 @@ import agents.Player;
 import data.MessageType;
 import data.Team;
 import data.message.PlayerZoneMessage;
-import jade.core.AID;
+import sajas.core.AID;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
-import jade.proto.SubscriptionInitiator;
+import sajas.proto.SubscriptionInitiator;
 
 import java.util.Vector;
 

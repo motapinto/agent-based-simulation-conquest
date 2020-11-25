@@ -7,12 +7,12 @@ import data.MessageType;
 import data.Team;
 import data.message.SimpleMessage;
 import data.message.TeamMessage;
-import jade.core.AID;
-import jade.core.behaviours.TickerBehaviour;
+import sajas.core.AID;
+import sajas.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
-import jade.proto.SubscriptionResponder;
+import sajas.proto.SubscriptionResponder;
 
 import java.io.IOException;
 import java.util.ArrayList;

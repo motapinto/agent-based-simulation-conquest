@@ -2,7 +2,7 @@ package PlayerBehaviours;
 
 import agents.Player;
 import data.message.PlayerActionMessage;
-import jade.core.behaviours.OneShotBehaviour;
+import sajas.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 
 import java.io.IOException;

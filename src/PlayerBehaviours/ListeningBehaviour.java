@@ -6,8 +6,8 @@ import data.MovementType;
 import data.Position;
 import data.Team;
 import data.message.*;
-import jade.core.AID;
-import jade.core.behaviours.CyclicBehaviour;
+import sajas.core.AID;
+import sajas.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 
@@ -32,7 +32,7 @@ public class ListeningBehaviour extends CyclicBehaviour {
     public void action() {
         ACLMessage msg = this.agent.receive(DirectoryFacilitator.getMessageTemplate());
         if(msg == null) return;
-        AID sender = msg.getSender();
+        AID sender = (AID) msg.getSender();
 
         SimpleMessage simpleMessage;
         try {

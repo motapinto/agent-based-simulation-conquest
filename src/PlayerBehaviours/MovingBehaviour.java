@@ -4,8 +4,8 @@ import agents.Player;
 import data.MovementType;
 import data.Position;
 import data.message.MovingMessage;
-import jade.core.AID;
-import jade.core.behaviours.WakerBehaviour;
+import sajas.core.AID;
+import sajas.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
 
 import java.io.IOException;
@@ -71,7 +71,7 @@ public class MovingBehaviour extends WakerBehaviour {
      */
     public void moveIn(AID zone) {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-        MovingMessage content = new MovingMessage(PLAYER, this.agent.getTeam(), ENTERED, this.agent.getAID());
+        MovingMessage content = new MovingMessage(PLAYER, this.agent.getTeam(), ENTERED, (AID) this.agent.getAID());
 
         try {
             msg.setContentObject(content);
@@ -96,7 +96,7 @@ public class MovingBehaviour extends WakerBehaviour {
      */
     public void moveOut(AID zone) {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-        MovingMessage content = new MovingMessage(PLAYER, this.agent.getTeam(), LEFT, this.agent.getAID());
+        MovingMessage content = new MovingMessage(PLAYER, this.agent.getTeam(), LEFT, (AID) this.agent.getAID());
 
         try {
             msg.setContentObject(content);

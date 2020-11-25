@@ -4,7 +4,7 @@ import data.AgentType;
 import data.MessageType;
 import data.MovementType;
 import data.Team;
-import jade.core.AID;
+import sajas.core.AID;
 
 import java.util.Objects;
 

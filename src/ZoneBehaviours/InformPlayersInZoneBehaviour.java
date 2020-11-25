@@ -1,7 +1,7 @@
 package ZoneBehaviours;
 import agents.Zone;
 import data.message.PlayersInZoneMessage;
-import jade.core.behaviours.OneShotBehaviour;
+import sajas.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 
 import java.io.IOException;

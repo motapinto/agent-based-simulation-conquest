@@ -4,10 +4,10 @@ import agents.GameServer;
 import data.AgentType;
 import data.MessageType;
 import data.message.SimpleMessage;
-import jade.core.behaviours.SimpleBehaviour;
+import sajas.core.behaviours.SimpleBehaviour;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.lang.acl.ACLMessage;
-import jade.proto.SubscriptionResponder;
+import sajas.proto.SubscriptionResponder;
 
 import java.io.IOException;
 
@@ -16,6 +16,7 @@ public class GameServerStart extends SimpleBehaviour {
     private DFAgentDescription[] alliedPlayers, axisPlayers, zones, alliedSpawn, axisSpawn;
 
     public GameServerStart(GameServer agent) {
+        System.out.println("Created game server start behaviour");
         this.agent = agent;
     }
 
@@ -39,6 +40,9 @@ public class GameServerStart extends SimpleBehaviour {
 
     @Override
     public boolean done() {
+        System.out.println(this.agent.getPlayersPerTeam() == alliedPlayers.length && this.agent.getPlayersPerTeam() == axisPlayers.length &&
+                this.agent.getZoneNumber() == zones.length && alliedSpawn.length == 1 && axisSpawn.length == 1 &&
+                this.agent.getPlayersPerTeam() * 2 + this.agent.getZoneNumber() + 2 == this.agent.getSubscriptionResponder().getSubscriptions().size());
         return this.agent.getPlayersPerTeam() == alliedPlayers.length && this.agent.getPlayersPerTeam() == axisPlayers.length &&
             this.agent.getZoneNumber() == zones.length && alliedSpawn.length == 1 && axisSpawn.length == 1 &&
             this.agent.getPlayersPerTeam() * 2 + this.agent.getZoneNumber() + 2 == this.agent.getSubscriptionResponder().getSubscriptions().size();

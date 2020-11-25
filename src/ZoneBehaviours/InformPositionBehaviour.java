@@ -1,7 +1,8 @@
 package ZoneBehaviours;
 import agents.Zone;
 import data.message.ZonePositionMessage;
-import jade.core.behaviours.OneShotBehaviour;
+import sajas.core.AID;
+import sajas.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class InformPositionBehaviour extends OneShotBehaviour {
 
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         try {
-            msg.setContentObject(new ZonePositionMessage(this.zoneAgent.getAID(), this.zoneAgent.getPosition()));
+            msg.setContentObject(new ZonePositionMessage((AID) this.zoneAgent.getAID(), this.zoneAgent.getPosition()));
         } catch (IOException e) {
             e.printStackTrace();
         }

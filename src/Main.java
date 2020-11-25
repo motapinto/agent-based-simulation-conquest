@@ -10,11 +10,11 @@ import gui.SwingGUIGame;
 import gui.SwingGUIStats;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
-import jade.core.Runtime;
+import sajas.core.Runtime;
 import jade.util.ExtendedProperties;
 import jade.util.leap.Properties;
-import jade.wrapper.AgentController;
-import jade.wrapper.ContainerController;
+import sajas.wrapper.AgentController;
+import sajas.wrapper.ContainerController;
 import jade.wrapper.ControllerException;
 
 import java.io.File;
@@ -129,7 +129,7 @@ public class Main {
             System.in.read();
 
             cc.kill();
-            rt.shutDown();
+            //rt.shutDown();
             swingGUIGame.closeSwingGUI();
         }
 

@@ -9,11 +9,11 @@ import data.Team;
 import data.ZoneType;
 import gui.SwingGUIGame;
 import gui.SwingGUIStats;
-import jade.core.AID;
+import sajas.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import jade.proto.SubscriptionResponder;
+import sajas.proto.SubscriptionResponder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,6 @@ public class Zone extends Logger {
         this.zoneType = zoneType;
         this.timeToBeCaptured = timeToBeCaptured;
         this.gameServerAgent = new AID("game-server", false);
-
     }
 
     @Override
@@ -70,7 +69,6 @@ public class Zone extends Logger {
      * Procedures for the start of the game
      */
     public void init(){
-        this.doWake();
         this.playerAgents = this.findPlayerAgents();
         if(this.zoneTeam == Team.NEUTRAL)
             this.addBehaviour(new CapturingBehaviour(this, 250));
@@ -88,7 +86,6 @@ public class Zone extends Logger {
         this.numberOfAlliedPlayers = 0;
         this.numberOfAxisPlayers = 0;
         this.capturePoints = 0;
-        this.doSuspend();
     }
 
     /**
@@ -101,10 +98,10 @@ public class Zone extends Logger {
         DFAgentDescription[] axisPlayers = this.searchDF("axis-player");
 
         for(DFAgentDescription ally : alliesPlayers) {
-            playerAgents.add(ally.getName());
+            playerAgents.add((AID) ally.getName());
         }
         for(DFAgentDescription axis : axisPlayers) {
-            playerAgents.add(axis.getName());
+            playerAgents.add((AID) axis.getName());
         }
 
         return playerAgents;

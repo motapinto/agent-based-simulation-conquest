@@ -5,10 +5,11 @@ import gameServerBehaviours.GameServerReceiver;
 import gameServerBehaviours.GameServerStart;
 import gui.SwingGUIGame;
 import gui.SwingGUIStats;
-import jade.core.AID;
+import sajas.core.AID;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import jade.proto.SubscriptionResponder;
+import sajas.proto.SubscriptionResponder;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,14 +25,17 @@ public class GameServer extends Logger {
 
     public GameServer(int zoneNumber, int playersPerTeam, int initialTickets, int gameTime, SwingGUIGame swingGUIGame, SwingGUIStats swingGUIStats) {
         super(swingGUIGame, swingGUIStats);
+        System.out.println("Created GameServer");
         this.zoneNumber = zoneNumber;
         this.playersPerTeam = playersPerTeam;
         this.initialTickets = initialTickets;
         this.gameTime = gameTime;
     }
 
+    @Override
     public void setup() {
         // Create subscription behaviour for game server
+        System.out.println("Setup GameServer");
         MessageTemplate template = SubscriptionResponder.createMessageTemplate(ACLMessage.SUBSCRIBE);
 
         //Initialize subscription service
