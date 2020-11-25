@@ -50,7 +50,6 @@ public class Main {
         Thread threadStats = new Thread(swingGUIStats);
         threadStats.start();
 
-
         Handler fileHandler = new FileHandler("./src/logs/game.log");
         Handler consoleHandler = new ConsoleHandler();
 
