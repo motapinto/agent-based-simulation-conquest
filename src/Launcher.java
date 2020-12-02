@@ -33,8 +33,8 @@ import java.util.logging.Level;
 public class Launcher extends Repast3Launcher {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(Launcher.class.getName());
 
-    private String zonesFile = "", axisPlayersFile = "", alliedPlayersFile = "";
-    private int initialTickets, gameTime;
+    private String zonesFile = "1.txt", axisPlayersFile = "1.txt", alliedPlayersFile = "1.txt";
+    private int initialTickets = 100, gameTime = 100;
 
     public static void main(String[] args) {
         SimInit init = new SimInit();
