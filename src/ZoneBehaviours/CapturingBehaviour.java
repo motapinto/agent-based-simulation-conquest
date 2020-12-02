@@ -4,7 +4,7 @@ import agents.Zone;
 import data.MessageType;
 import data.Team;
 import data.message.PlayerZoneMessage;
-import sajas.core.AID;
+import jade.core.AID;
 import sajas.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 import sajas.proto.SubscriptionResponder;
@@ -79,7 +79,7 @@ public class CapturingBehaviour extends TickerBehaviour {
             }
             break;
             case AXIS: {
-                this.zoneAgent.decreaseCapturePoints( 0.2);
+                this.zoneAgent.decreaseCapturePoints(0.2);
                 if (this.zoneAgent.getCapturePoints() <= minValue){
                     this.zoneAgent.setCapturePoints(minValue);
                 }
@@ -133,7 +133,7 @@ public class CapturingBehaviour extends TickerBehaviour {
     private void informSubscribers(Team player, MessageType messageType){
         ACLMessage playerZoneMessage = new ACLMessage(ACLMessage.INFORM);
         try {
-            playerZoneMessage.setContentObject(new PlayerZoneMessage(player, messageType, (AID) this.zoneAgent.getAID(), this.zoneAgent.getCapturePoints()));
+            playerZoneMessage.setContentObject(new PlayerZoneMessage(player, messageType, this.zoneAgent.getAID(), this.zoneAgent.getCapturePoints()));
         } catch (IOException e) {
             e.printStackTrace();
             return;

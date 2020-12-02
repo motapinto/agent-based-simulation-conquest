@@ -11,7 +11,7 @@ import data.Position;
 import data.Team;
 import gui.SwingGUIGame;
 import gui.SwingGUIStats;
-import sajas.core.AID;
+import jade.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.lang.acl.ACLMessage;
 
@@ -26,7 +26,7 @@ public class Player extends Logger {
     private final PlayerClass playerClass;
     private int points = 0;
     private double velocity = 1;
-    private final AID gameServerAgent = new AID("game-server", false);
+    private final AID gameServerAgent = new sajas.core.AID("game-server", false);
     private long moveTimeout = 0;
 
     private AID currentZone;
@@ -117,7 +117,7 @@ public class Player extends Logger {
 
         DFAgentDescription[] zoneDescriptions = this.searchDF("zone");
         for(DFAgentDescription zone : zoneDescriptions) {
-            zones.add((AID) zone.getName());
+            zones.add(zone.getName());
         }
 
         return zones;
@@ -136,7 +136,7 @@ public class Player extends Logger {
         }
 
         assert zone != null;
-        return (AID) zone.getName();
+        return zone.getName();
     }
 
     /**
@@ -155,7 +155,7 @@ public class Player extends Logger {
         DFAgentDescription[] allies = this.searchDF(String.format("%s-player", query));
         for(DFAgentDescription ally : allies) {
             if(!ally.getName().equals(this.getAID())) {
-                teamPlayers.add( (AID) ally.getName());
+                teamPlayers.add(ally.getName());
             }
         }
 

@@ -6,7 +6,7 @@ import data.MovementType;
 import data.Position;
 import data.Team;
 import data.message.*;
-import sajas.core.AID;
+import jade.core.AID;
 import sajas.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
@@ -20,7 +20,6 @@ import static data.MessageType.KILLED;
 public class ListeningBehaviour extends CyclicBehaviour {
     private static final long MOVE_TIMEOUT = 500;
     private final Player agent;
-    private final static int MAX_HEALTH = 200;
     private final static int MIN_HEALTH = 0;
 
     public ListeningBehaviour(Player agent) {
@@ -32,7 +31,7 @@ public class ListeningBehaviour extends CyclicBehaviour {
     public void action() {
         ACLMessage msg = this.agent.receive(DirectoryFacilitator.getMessageTemplate());
         if(msg == null) return;
-        AID sender = (AID) msg.getSender();
+        AID sender = msg.getSender();
 
         SimpleMessage simpleMessage;
         try {

@@ -3,7 +3,7 @@ package SharedBehaviours;
 import agents.DirectoryFacilitator;
 import data.AgentType;
 import data.message.SimpleMessage;
-import sajas.core.AID;
+import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;

@@ -4,7 +4,7 @@ import agents.Player;
 import data.MessageType;
 import data.Team;
 import data.message.PlayerZoneMessage;
-import sajas.core.AID;
+import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;

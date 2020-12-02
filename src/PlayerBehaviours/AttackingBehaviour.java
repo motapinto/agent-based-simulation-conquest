@@ -3,7 +3,7 @@ package PlayerBehaviours;
 import agents.Player;
 import data.Team;
 import data.message.PlayerActionMessage;
-import sajas.core.AID;
+import jade.core.AID;
 import sajas.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
 

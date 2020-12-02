@@ -5,11 +5,10 @@ import gameServerBehaviours.GameServerReceiver;
 import gameServerBehaviours.GameServerStart;
 import gui.SwingGUIGame;
 import gui.SwingGUIStats;
-import sajas.core.AID;
+import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import sajas.proto.SubscriptionResponder;
-
 
 import java.util.HashMap;
 import java.util.Map;

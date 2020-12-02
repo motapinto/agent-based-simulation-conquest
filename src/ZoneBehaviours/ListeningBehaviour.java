@@ -3,7 +3,7 @@ import agents.DirectoryFacilitator;
 import agents.Zone;
 import data.message.MovingMessage;
 import data.message.SimpleMessage;
-import sajas.core.AID;
+import jade.core.AID;
 import sajas.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
@@ -27,7 +27,7 @@ public class ListeningBehaviour extends CyclicBehaviour {
         ACLMessage msg = this.agent.receive(pattern);
         if(msg == null) return;
 
-        AID sender = (AID) msg.getSender();
+        AID sender = msg.getSender();
 
         if(this.agent.getPlayerAgents().contains(sender)){
             try {
@@ -54,11 +54,11 @@ public class ListeningBehaviour extends CyclicBehaviour {
         MovingMessage movingMessage = (MovingMessage) aclMessage.getContentObject();
         switch (movingMessage.getMovementType()) {
             case ENTERED:
-                this.agent.playerEnteredZone(movingMessage.getTeam(), (AID) aclMessage.getSender());
+                this.agent.playerEnteredZone(movingMessage.getTeam(), aclMessage.getSender());
                 this.agent.logAction(aclMessage.getSender().getLocalName() + " entered " + this.agent.getLocalName());
                 break;
             case LEFT:
-                this.agent.playerLeftZone(movingMessage.getTeam(), (AID) aclMessage.getSender());
+                this.agent.playerLeftZone(movingMessage.getTeam(), aclMessage.getSender());
                 this.agent.logAction(aclMessage.getSender().getLocalName() + " left " + this.agent.getLocalName());
                 break;
         }

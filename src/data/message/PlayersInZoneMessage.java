@@ -1,6 +1,6 @@
 package data.message;
 import data.AgentType;
-import sajas.core.AID;
+import jade.core.AID;
 
 import java.util.ArrayList;
 import java.util.List;

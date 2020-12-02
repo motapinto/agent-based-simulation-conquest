@@ -5,7 +5,7 @@ import data.MovementType;
 import data.Position;
 import data.Team;
 import data.message.PlayerBackupRequestMessage;
-import sajas.core.AID;
+import jade.core.AID;
 import sajas.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 
@@ -88,7 +88,7 @@ public class InZoneBehaviour extends TickerBehaviour {
             else if(this.agent.getPlayerClass() == MEDIC && teamPlayersInZone.size() != 0 &&
                     (this.healingBehaviour == null || this.healingBehaviour.canHeal())) {
 
-                this.agent.getTeamPlayersInZoneHealth().put((AID) this.agent.getAID(), Player.getMaxHealth(this.agent.getPlayerClass()) - this.agent.getHealth());
+                this.agent.getTeamPlayersInZoneHealth().put(this.agent.getAID(), Player.getMaxHealth(this.agent.getPlayerClass()) - this.agent.getHealth());
                 AID selectedAlly = Collections.max(this.agent.getTeamPlayersInZoneHealth().entrySet(),
                         Comparator.comparingInt(Map.Entry::getValue)).getKey();
 

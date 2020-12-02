@@ -9,7 +9,7 @@ import data.Team;
 import data.ZoneType;
 import gui.SwingGUIGame;
 import gui.SwingGUIStats;
-import sajas.core.AID;
+import jade.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
@@ -39,7 +39,7 @@ public class Zone extends Logger {
         this.position = position;
         this.zoneType = zoneType;
         this.timeToBeCaptured = timeToBeCaptured;
-        this.gameServerAgent = new AID("game-server", false);
+        this.gameServerAgent = new sajas.core.AID("game-server", false);
     }
 
     @Override
@@ -98,10 +98,10 @@ public class Zone extends Logger {
         DFAgentDescription[] axisPlayers = this.searchDF("axis-player");
 
         for(DFAgentDescription ally : alliesPlayers) {
-            playerAgents.add((AID) ally.getName());
+            playerAgents.add(ally.getName());
         }
         for(DFAgentDescription axis : axisPlayers) {
-            playerAgents.add((AID) axis.getName());
+            playerAgents.add(axis.getName());
         }
 
         return playerAgents;

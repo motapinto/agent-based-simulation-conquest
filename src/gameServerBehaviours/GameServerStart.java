@@ -16,7 +16,6 @@ public class GameServerStart extends SimpleBehaviour {
     private DFAgentDescription[] alliedPlayers, axisPlayers, zones, alliedSpawn, axisSpawn;
 
     public GameServerStart(GameServer agent) {
-        System.out.println("Created game server start behaviour");
         this.agent = agent;
     }
 
@@ -40,9 +39,6 @@ public class GameServerStart extends SimpleBehaviour {
 
     @Override
     public boolean done() {
-        System.out.println(this.agent.getPlayersPerTeam() == alliedPlayers.length && this.agent.getPlayersPerTeam() == axisPlayers.length &&
-                this.agent.getZoneNumber() == zones.length && alliedSpawn.length == 1 && axisSpawn.length == 1 &&
-                this.agent.getPlayersPerTeam() * 2 + this.agent.getZoneNumber() + 2 == this.agent.getSubscriptionResponder().getSubscriptions().size());
         return this.agent.getPlayersPerTeam() == alliedPlayers.length && this.agent.getPlayersPerTeam() == axisPlayers.length &&
             this.agent.getZoneNumber() == zones.length && alliedSpawn.length == 1 && axisSpawn.length == 1 &&
             this.agent.getPlayersPerTeam() * 2 + this.agent.getZoneNumber() + 2 == this.agent.getSubscriptionResponder().getSubscriptions().size();

@@ -7,7 +7,7 @@ import data.MessageType;
 import data.Team;
 import data.message.SimpleMessage;
 import data.message.TeamMessage;
-import sajas.core.AID;
+import jade.core.AID;
 import sajas.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;

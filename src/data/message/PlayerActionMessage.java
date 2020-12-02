@@ -2,7 +2,7 @@ package data.message;
 
 import data.AgentType;
 import data.MessageType;
-import sajas.core.AID;
+import jade.core.AID;
 
 import java.util.Objects;
 
