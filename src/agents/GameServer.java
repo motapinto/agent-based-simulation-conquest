@@ -10,6 +10,7 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import sajas.proto.SubscriptionResponder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ public class GameServer extends Logger {
     private final int gameTime; // Maximum time a game can take to finish
     private SubscriptionResponder subscriptionResponder;
     private boolean finished = false;
+    private ArrayList<Integer> teamTickets = new ArrayList<>();
 
     public GameServer(int zoneNumber, int playersPerTeam, int initialTickets, int gameTime, SwingGUIGame swingGUIGame, SwingGUIStats swingGUIStats) {
         super(swingGUIGame, swingGUIStats);
@@ -29,6 +31,10 @@ public class GameServer extends Logger {
         this.playersPerTeam = playersPerTeam;
         this.initialTickets = initialTickets;
         this.gameTime = gameTime;
+
+        for (int i = 0; i < 2; i++) {
+            this.teamTickets.add(initialTickets);
+        }
     }
 
     @Override
@@ -90,5 +96,9 @@ public class GameServer extends Logger {
     @Override
     public void end() {
 
+    }
+
+    public ArrayList<Integer> getTeamTickets() {
+        return teamTickets;
     }
 }
