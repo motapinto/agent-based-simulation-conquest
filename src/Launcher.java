@@ -40,7 +40,6 @@ public class Launcher extends Repast3Launcher {
     private int initialTickets = 100, gameTime = 100;
     private List<AgentController> agentsList = new ArrayList<>();
 
-    private Schedule schedule;
     private OpenSequenceGraph plot;
 
     public static void main(String[] args) {
@@ -99,7 +98,7 @@ public class Launcher extends Repast3Launcher {
     }
 
     private void buildSchedule() {
-        schedule.scheduleActionAtInterval(1, plot, "step", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, plot, "step", Schedule.LAST);
     }
 
     @Override
