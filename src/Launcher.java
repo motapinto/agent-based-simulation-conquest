@@ -17,14 +17,18 @@ import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.AgentController;
 import sajas.wrapper.ContainerController;
+import uchicago.src.sim.analysis.OpenSequenceGraph;
+import uchicago.src.sim.analysis.Sequence;
+import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
+import uchicago.src.sim.gui.DisplaySurface;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -32,14 +36,16 @@ import java.util.logging.Level;
 
 public class Launcher extends Repast3Launcher {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(Launcher.class.getName());
-
     private String zonesFile = "1.txt", axisPlayersFile = "1.txt", alliedPlayersFile = "1.txt";
     private int initialTickets = 100, gameTime = 100;
+    private List<AgentController> agentsList = new ArrayList<>();
+
+    private Schedule schedule;
+    private OpenSequenceGraph plot;
 
     public static void main(String[] args) {
         SimInit init = new SimInit();
         Launcher l = new Launcher();
-
         init.loadModel(l, null, false);
     }
 
@@ -54,13 +60,46 @@ public class Launcher extends Repast3Launcher {
     }
 
     @Override
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    @Override
     public void setup() {
         super.setup();
+        schedule = new Schedule();
     }
 
     @Override
     public void begin() {
         super.begin();
+        buildCharts();
+        buildSchedule();
+    }
+
+    private void buildCharts() {
+        if (plot != null) plot.dispose();
+        plot = new OpenSequenceGraph("Colors and Agents", this);
+        plot.setAxisTitles("time", "n");
+
+        // plot number of different existing colors
+        plot.addSequence("Number of colors", new Sequence() {
+            public double getSValue() {
+                return 5;
+            }
+        });
+
+        // plot number of agents with the most abundant color
+        plot.addSequence("Top color", new Sequence() {
+            public double getSValue() {
+                return 10;
+            }
+        });
+        plot.display();
+    }
+
+    private void buildSchedule() {
+        schedule.scheduleActionAtInterval(1, plot, "step", Schedule.LAST);
     }
 
     @Override
@@ -184,9 +223,8 @@ public class Launcher extends Repast3Launcher {
         Thread threadGame = new Thread(swingGUIGame);
         threadGame.start();
 
-        List<AgentController> agentsList = new ArrayList<>();
+        agentsList = new ArrayList<>();
         agentsList.add(container.acceptNewAgent("game-server", new GameServer(zonePositions.size() - 2, axisPlayers.size(), initialTickets, gameTime, swingGUIGame, swingGUIStats)));
-
         agentsList.add(container.acceptNewAgent("allied-spawn", new Zone(zonePositions.get(0), ZoneType.BASE, Team.ALLIED, 0, swingGUIGame, swingGUIStats)));
         agentsList.add(container.acceptNewAgent("axis-spawn", new Zone(zonePositions.get(1), ZoneType.BASE, Team.AXIS, 0, swingGUIGame, swingGUIStats)));
 
