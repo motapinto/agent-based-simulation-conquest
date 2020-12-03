@@ -146,7 +146,6 @@ public class ColorPickingModel extends SimModelImpl {
 		schedule.scheduleActionAtInterval(1, plot, "step", Schedule.LAST);
 	}
 
-
 	class MainAction extends BasicAction {
 
 		public void execute() {
