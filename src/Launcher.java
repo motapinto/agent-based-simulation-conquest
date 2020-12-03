@@ -39,15 +39,12 @@ public class Launcher extends Repast3Launcher {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(Launcher.class.getName());
     private String zonesFile = "1.txt", axisPlayersFile = "1.txt", alliedPlayersFile = "1.txt";
     private int initialTickets = 100, gameTime = 100;
-    private List<AgentController> agentsList = new ArrayList<>();
-
     private OpenSequenceGraph plot;
 
     private GameServer gameServer;
     private List<Zone> zones;
     private List<Player> alliedPlayers;
     private List<Player> axisPlayers;
-
 
     public static void main(String[] args) {
         SimInit init = new SimInit();
@@ -79,22 +76,23 @@ public class Launcher extends Repast3Launcher {
 
     private void buildCharts() {
         if (plot != null) plot.dispose();
-        plot = new OpenSequenceGraph("Colors and Agents", this);
-        plot.setAxisTitles("time", "n");
+        plot = new OpenSequenceGraph("Team's tickets", this);
+        plot.setAxisTitles("time", "tickets");
 
-        // plot number of different existing colors
-        plot.addSequence("Number of colors", new Sequence() {
+        plot.addSequence("Allied tickets", new Sequence() {
             public double getSValue() {
-                return 5;
+                return gameServer.getTeamTickets().get(0);
             }
-        });
+        }, SwingGUIGame.GREEN, 5);
 
-        // plot number of agents with the most abundant color
-        plot.addSequence("Top color", new Sequence() {
+        plot.addSequence("Axis tickets", new Sequence() {
             public double getSValue() {
-                return 10;
+                return gameServer.getTeamTickets().get(1);
             }
-        });
+        }, SwingGUIGame.RED, 5);
+
+        plot.setYRange(0, this.gameServer.getInitialTickets());
+
         plot.display();
     }
 
@@ -223,7 +221,7 @@ public class Launcher extends Repast3Launcher {
         Thread threadGame = new Thread(swingGUIGame);
         threadGame.start();
 
-        agentsList = new ArrayList<>();
+        List<AgentController> agentsList = new ArrayList<>();
         gameServer =  new GameServer(zonePositions.size() - 2, axisPlayersClass.size(), initialTickets, gameTime, swingGUIGame, swingGUIStats);
         agentsList.add(container.acceptNewAgent("game-server", gameServer));
         zones = new ArrayList<>();
@@ -235,7 +233,7 @@ public class Launcher extends Repast3Launcher {
         for (int j = 2; j < zonePositions.size(); j++) {
             char c = (char) ('A' + j - 2);
             zones.add(new Zone(zonePositions.get(j), ZoneType.CAPTURABLE, Team.NEUTRAL, 5, swingGUIGame, swingGUIStats));
-            agentsList.add(container.acceptNewAgent("zone-" + c, zones.get(j-1)));
+            agentsList.add(container.acceptNewAgent("zone-" + c, zones.get(j)));
         }
 
         alliedPlayers = new ArrayList<>();

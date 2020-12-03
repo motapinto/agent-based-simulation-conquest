@@ -28,10 +28,8 @@ public class GameServerRun extends TickerBehaviour {
         super(agent, drainageTick);
 
         this.agent = agent;
-        this.teamTickets = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            this.teamTickets.add(this.agent.getInitialTickets());
-        }
+        this.teamTickets = agent.getTeamTickets();
+
 
         this.agent.getSwingGUIGame().startGame();
         this.timeEnd = System.currentTimeMillis() + this.agent.getGameTime() * 1000L;
