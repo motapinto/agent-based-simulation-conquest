@@ -8,6 +8,7 @@ import data.PlayerClass;
 import data.Position;
 import data.Team;
 import data.ZoneType;
+import jade.core.AID;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.util.ExtendedProperties;
@@ -42,12 +43,13 @@ public class Launcher extends Repast3Launcher {
     private List<AgentController> agentsList = new ArrayList<>();
 
     private OpenSequenceGraph plot;
+    private OpenSequenceGraph zonesCaptured;
+    private OpenSequenceGraph playerClassPoints;
 
     private GameServer gameServer;
     private List<Zone> zones;
     private List<Player> alliedPlayers;
     private List<Player> axisPlayers;
-
 
     public static void main(String[] args) {
         SimInit init = new SimInit();
@@ -96,10 +98,90 @@ public class Launcher extends Repast3Launcher {
             }
         });
         plot.display();
+
+        if (zonesCaptured != null) zonesCaptured.dispose();
+        zonesCaptured = new OpenSequenceGraph("Zones Captured", this);
+        zonesCaptured.setAxisTitles("time", "n");
+
+        // plot number of different existing colors
+        zonesCaptured.addSequence("Axis", new Sequence() {
+            public double getSValue() {
+                return zonesPerTeam(Team.AXIS);
+            }
+        }, SwingGUIGame.RED, 5);
+
+        // plot number of agents with the most abundant color
+        zonesCaptured.addSequence("Allied", new Sequence() {
+            public double getSValue() {
+                return  zonesPerTeam(Team.ALLIED);
+            }
+        }, SwingGUIGame.GREEN, 5);
+
+        zonesCaptured.setYRange(0, zones.size());
+        zonesCaptured.display();
+
+        if (playerClassPoints != null) playerClassPoints.dispose();
+        playerClassPoints = new OpenSequenceGraph("Player class points", this);
+        playerClassPoints.setAxisTitles("time", "n");
+
+        playerClassPoints.addSequence("Defender", new Sequence() {
+            public double getSValue() {
+                return  pointsPerClass(PlayerClass.DEFENDER);
+            }
+        }, SwingGUIGame.RED, 5);
+
+        playerClassPoints.addSequence("Medic", new Sequence() {
+            public double getSValue() {
+                return  pointsPerClass(PlayerClass.MEDIC);
+            }
+        }, SwingGUIGame.GREEN, 5);
+
+        playerClassPoints.addSequence("Defender", new Sequence() {
+            public double getSValue() {
+                return  pointsPerClass(PlayerClass.SNIPER);
+            }
+        }, new Color(0, 255, 0), 5);
+
+        playerClassPoints.addSequence("Assault", new Sequence() {
+            public double getSValue() {
+                return  pointsPerClass(PlayerClass.ASSAULT);
+            }
+        }, new Color(255, 255, 0), 5);
+
+        playerClassPoints.setYRange(0, 100);
+        playerClassPoints.display();
+    }
+
+    private double zonesPerTeam(Team team){
+        int counter = 0;
+        for(Zone zone: zones){
+            if(zone.getZoneTeam().equals(team) && !zone.getZoneType().equals(ZoneType.BASE)){
+                counter++;
+            }
+        }
+        return counter;
+    }
+
+    private double pointsPerClass(PlayerClass playerClass){
+        int counter = 0;
+        for(Player player: alliedPlayers){
+            if(player.getPlayerClass().equals(playerClass))
+                counter+= player.getPoints();
+        }
+        for(Player player: axisPlayers){
+            if(player.getPlayerClass().equals(playerClass))
+                counter+= player.getPoints();
+        }
+
+        if(counter > playerClassPoints.getYRange()[1])
+            playerClassPoints.setYRange(0, counter);
+        return counter;
     }
 
     private void buildSchedule() {
         getSchedule().scheduleActionAtInterval(1, plot, "step", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, zonesCaptured, "step", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, playerClassPoints, "step", Schedule.LAST);
     }
 
     @Override
@@ -235,7 +317,7 @@ public class Launcher extends Repast3Launcher {
         for (int j = 2; j < zonePositions.size(); j++) {
             char c = (char) ('A' + j - 2);
             zones.add(new Zone(zonePositions.get(j), ZoneType.CAPTURABLE, Team.NEUTRAL, 5, swingGUIGame, swingGUIStats));
-            agentsList.add(container.acceptNewAgent("zone-" + c, zones.get(j-1)));
+            agentsList.add(container.acceptNewAgent("zone-" + c, zones.get(j)));
         }
 
         alliedPlayers = new ArrayList<>();

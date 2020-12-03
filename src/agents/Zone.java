@@ -164,4 +164,6 @@ public class Zone extends Logger {
     public ArrayList<AID> getAlliedAgents() { return alliedAgents; }
 
     public ArrayList<AID> getAxisAgents() { return axisAgents; }
+
+    public ZoneType getZoneType() { return zoneType; }
 }
