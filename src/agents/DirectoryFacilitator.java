@@ -1,5 +1,6 @@
 package agents;
 
+import sajas.core.behaviours.Behaviour;
 import sajas.core.Agent;
 import sajas.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -9,8 +10,12 @@ import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class DirectoryFacilitator extends Agent {
     private boolean isRegistered = false;
+    private List<Behaviour> behaviours = new ArrayList<>();
 
     public DirectoryFacilitator() {
         super();
@@ -23,6 +28,18 @@ public abstract class DirectoryFacilitator extends Agent {
         }
     }
 
+    @Override
+    public void addBehaviour(sajas.core.behaviours.Behaviour b) {
+        this.behaviours.add(b);
+        super.addBehaviour(b);
+    }
+
+    @Override
+    public void removeBehaviour(Behaviour b) {
+        this.behaviours.remove(b);
+        super.removeBehaviour(b);
+    }
+
     /**
      * Procedures for the start of the game
      */
@@ -31,7 +48,14 @@ public abstract class DirectoryFacilitator extends Agent {
     /**
      * Procedures for the end of the game
      */
-    public abstract void end();
+    public void end() {
+        this.getBehaviours().forEach((behaviour) -> {
+            behaviour.setAgent(null);
+            super.removeBehaviour(behaviour);
+        });
+
+        this.getBehaviours().clear();
+    }
 
     /**
      * Register an agent on the Directory Facilitator(DF)
@@ -92,5 +116,13 @@ public abstract class DirectoryFacilitator extends Agent {
                     MessageTemplate.MatchPerformative(ACLMessage.REQUEST)
             )
         );
+    }
+
+    public List<Behaviour> getBehaviours() {
+        return behaviours;
+    }
+
+    public void setBehaviours(List<Behaviour> behaviours) {
+        this.behaviours = behaviours;
     }
 }

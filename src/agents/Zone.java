@@ -86,6 +86,7 @@ public class Zone extends Logger {
         this.numberOfAlliedPlayers = 0;
         this.numberOfAxisPlayers = 0;
         this.capturePoints = 0;
+        super.end();
     }
 
     /**

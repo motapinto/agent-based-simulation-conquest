@@ -26,7 +26,7 @@ public class GameServer extends Logger {
 
     public GameServer(int zoneNumber, int playersPerTeam, int initialTickets, int gameTime, SwingGUIGame swingGUIGame, SwingGUIStats swingGUIStats) {
         super(swingGUIGame, swingGUIStats);
-        System.out.println("Created GameServer");
+
         this.zoneNumber = zoneNumber;
         this.playersPerTeam = playersPerTeam;
         this.initialTickets = initialTickets;
@@ -40,7 +40,6 @@ public class GameServer extends Logger {
     @Override
     public void setup() {
         // Create subscription behaviour for game server
-        System.out.println("Setup GameServer");
         MessageTemplate template = SubscriptionResponder.createMessageTemplate(ACLMessage.SUBSCRIBE);
 
         //Initialize subscription service
@@ -90,11 +89,6 @@ public class GameServer extends Logger {
 
     @Override
     public void init() {
-
-    }
-
-    @Override
-    public void end() {
 
     }
 

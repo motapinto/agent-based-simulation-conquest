@@ -26,6 +26,7 @@ public class InformPlayersInZoneBehaviour extends OneShotBehaviour {
         this.zoneAgent.getAlliedAgents().forEach(msg::addReceiver);
         this.zoneAgent.getAxisAgents().forEach(msg::addReceiver);
         this.zoneAgent.send(msg);
+        this.zoneAgent.removeBehaviour(this);
     }
 
 }

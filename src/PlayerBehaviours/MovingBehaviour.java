@@ -59,6 +59,8 @@ public class MovingBehaviour extends WakerBehaviour {
         } else if(moveType == LEFT) {
             this.moveOut(zone);
         }
+
+        this.agent.removeBehaviour(this);
     }
 
     @Override

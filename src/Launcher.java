@@ -1,5 +1,3 @@
-import gui.SwingGUIGame;
-import gui.SwingGUIStats;
 import agents.GameServer;
 import agents.Logger;
 import agents.Player;
@@ -8,6 +6,8 @@ import data.PlayerClass;
 import data.Position;
 import data.Team;
 import data.ZoneType;
+import gui.SwingGUIGame;
+import gui.SwingGUIStats;
 import jade.core.AID;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -19,18 +19,17 @@ import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.AgentController;
 import sajas.wrapper.ContainerController;
 import uchicago.src.sim.analysis.OpenSequenceGraph;
-import uchicago.src.sim.analysis.Sequence;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.games.Game;
 import uchicago.src.sim.gui.DisplaySurface;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -41,6 +40,9 @@ public class Launcher extends Repast3Launcher {
     private String zonesFile = "1.txt", axisPlayersFile = "1.txt", alliedPlayersFile = "1.txt";
     private int initialTickets = 100, gameTime = 100;
     private OpenSequenceGraph plot;
+    private SwingGUIStats swingGUIStats;
+    private SwingGUIGame swingGUIGame;
+    private ContainerController container;
     private OpenSequenceGraph zonesCaptured;
     private OpenSequenceGraph playerClassPoints;
 
@@ -82,17 +84,9 @@ public class Launcher extends Repast3Launcher {
         plot = new OpenSequenceGraph("Team's tickets", this);
         plot.setAxisTitles("time", "tickets");
 
-        plot.addSequence("Allied tickets", new Sequence() {
-            public double getSValue() {
-                return gameServer.getTeamTickets().get(0);
-            }
-        }, SwingGUIGame.GREEN, 5);
+        plot.addSequence("Allied tickets", () -> gameServer.getTeamTickets().get(0), SwingGUIGame.GREEN, 5);
 
-        plot.addSequence("Axis tickets", new Sequence() {
-            public double getSValue() {
-                return gameServer.getTeamTickets().get(1);
-            }
-        }, SwingGUIGame.RED, 5);
+        plot.addSequence("Axis tickets", () -> gameServer.getTeamTickets().get(1), SwingGUIGame.RED, 5);
 
         plot.setYRange(0, this.gameServer.getInitialTickets());
 
@@ -192,7 +186,7 @@ public class Launcher extends Repast3Launcher {
         props.setProperty("main", (Boolean.TRUE).toString());
 
         Profile p = new ProfileImpl(props);
-        ContainerController container = rt.createMainContainer(p);
+        container = rt.createMainContainer(p);
 
         try {
             this.initLogger();
@@ -241,46 +235,6 @@ public class Launcher extends Repast3Launcher {
         }
     }
 
-    public String getZonesFile() {
-        return zonesFile;
-    }
-
-    public void setZonesFile(String zonesFile) {
-        this.zonesFile = zonesFile;
-    }
-
-    public String getAxisPlayersFile() {
-        return axisPlayersFile;
-    }
-
-    public void setAxisPlayersFile(String axisPlayersFile) {
-        this.axisPlayersFile = axisPlayersFile;
-    }
-
-    public String getAlliedPlayersFile() {
-        return alliedPlayersFile;
-    }
-
-    public void setAlliedPlayersFile(String alliedPlayersFile) {
-        this.alliedPlayersFile = alliedPlayersFile;
-    }
-
-    public int getInitialTickets() {
-        return initialTickets;
-    }
-
-    public void setInitialTickets(int initialTickets) {
-        this.initialTickets = initialTickets;
-    }
-
-    public int getGameTime() {
-        return gameTime;
-    }
-
-    public void setGameTime(int gameTime) {
-        this.gameTime = gameTime;
-    }
-
     private void initLogger() throws IOException {
         Handler fileHandler = new FileHandler("./src/logs/game.log");
         Handler consoleHandler = new ConsoleHandler();
@@ -296,17 +250,24 @@ public class Launcher extends Repast3Launcher {
     }
 
     private void launchAgents(ContainerController container, List<Position> zonePositions, List<PlayerClass> alliedPlayersClass, List<PlayerClass> axisPlayersClass) throws StaleProxyException, FileNotFoundException {
-        SwingGUIStats swingGUIStats = new SwingGUIStats();
-        Thread threadStats = new Thread(swingGUIStats);
-        threadStats.start();
+        if(swingGUIStats == null) {
+            swingGUIStats = new SwingGUIStats();
+            Thread threadStats = new Thread(swingGUIStats);
+            threadStats.start();
+        }
 
-        SwingGUIGame swingGUIGame = new SwingGUIGame(0, initialTickets, gameTime);
+        if(swingGUIGame != null) {
+            swingGUIGame.closeSwingGUI();
+        }
+
+        swingGUIGame = new SwingGUIGame(0, initialTickets, gameTime);
         Thread threadGame = new Thread(swingGUIGame);
         threadGame.start();
 
         List<AgentController> agentsList = new ArrayList<>();
         gameServer =  new GameServer(zonePositions.size() - 2, axisPlayersClass.size(), initialTickets, gameTime, swingGUIGame, swingGUIStats);
         agentsList.add(container.acceptNewAgent("game-server", gameServer));
+
         zones = new ArrayList<>();
         zones.add(new Zone(zonePositions.get(0), ZoneType.BASE, Team.ALLIED, 0, swingGUIGame, swingGUIStats));
         zones.add(new Zone(zonePositions.get(1), ZoneType.BASE, Team.AXIS, 0, swingGUIGame, swingGUIStats));
@@ -320,14 +281,12 @@ public class Launcher extends Repast3Launcher {
         }
 
         alliedPlayers = new ArrayList<>();
-
         for (int j = 0; j < alliedPlayersClass.size(); j++) {
             alliedPlayers.add(new Player(Team.ALLIED, alliedPlayersClass.get(j), swingGUIGame, swingGUIStats));
             agentsList.add(container.acceptNewAgent("allied-" + j + "-" + alliedPlayersClass.get(j).toString().toLowerCase(), alliedPlayers.get(j)));
         }
 
         axisPlayers = new ArrayList<>();
-
         for (int j = 0; j < axisPlayersClass.size(); j++) {
             axisPlayers.add(new Player(Team.AXIS, axisPlayersClass.get(j), swingGUIGame, swingGUIStats));
             agentsList.add(container.acceptNewAgent("axis-" + j + "-" + axisPlayersClass.get(j).toString().toLowerCase(), axisPlayers.get(j)));
@@ -378,6 +337,55 @@ public class Launcher extends Repast3Launcher {
             positions.add(new Position(x, y));
         }
         myReader.close();
+
         return positions;
+    }
+
+    @Override
+    public void stopSimulation() {
+        swingGUIGame.closeSwingGUI();
+        swingGUIStats.closeSwingGUI();
+
+        super.stopSimulation();
+    }
+
+    public String getZonesFile() {
+        return zonesFile;
+    }
+
+    public void setZonesFile(String zonesFile) {
+        this.zonesFile = zonesFile;
+    }
+
+    public String getAxisPlayersFile() {
+        return axisPlayersFile;
+    }
+
+    public void setAxisPlayersFile(String axisPlayersFile) {
+        this.axisPlayersFile = axisPlayersFile;
+    }
+
+    public String getAlliedPlayersFile() {
+        return alliedPlayersFile;
+    }
+
+    public void setAlliedPlayersFile(String alliedPlayersFile) {
+        this.alliedPlayersFile = alliedPlayersFile;
+    }
+
+    public int getInitialTickets() {
+        return initialTickets;
+    }
+
+    public void setInitialTickets(int initialTickets) {
+        this.initialTickets = initialTickets;
+    }
+
+    public int getGameTime() {
+        return gameTime;
+    }
+
+    public void setGameTime(int gameTime) {
+        this.gameTime = gameTime;
     }
 }

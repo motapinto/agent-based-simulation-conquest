@@ -80,6 +80,7 @@ public class InZoneBehaviour extends TickerBehaviour {
                 int index = rand.nextInt(enemiesInZone.size());
                 AID selectedEnemy = enemiesInZone.get(index);
 
+                this.agent.removeBehaviour(this.attackingBehaviour);
                 this.attackingBehaviour = new AttackingBehaviour(this.agent, selectedEnemy);
                 this.agent.addBehaviour(this.attackingBehaviour);
             }
@@ -96,6 +97,7 @@ public class InZoneBehaviour extends TickerBehaviour {
                     return;
                 }
 
+                this.agent.removeBehaviour(this.healingBehaviour);
                 this.healingBehaviour = new HealingBehaviour(this.agent, selectedAlly);
                 this.agent.addBehaviour(this.healingBehaviour);
             }

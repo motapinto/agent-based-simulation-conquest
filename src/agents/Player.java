@@ -105,8 +105,7 @@ public class Player extends Logger {
      * Procedures for the end of the game
      */
     public void end() {
-        this.addBehaviour(new MovingBehaviour(this, this.currentZone, MovementType.LEFT));
-        this.addBehaviour(new MovingBehaviour(this, this.spawnZone, MovementType.ENTERED));
+        super.end();
     }
 
     /**
