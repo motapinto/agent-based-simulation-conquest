@@ -30,7 +30,7 @@ public class InZoneBehaviour extends TickerBehaviour {
     private static final int NEUTRAL_POINTS = 0;
 
     public InZoneBehaviour(Player agent, long period) {
-        super(agent, period);
+        super(agent, period / agent.speedFactor);
         this.agent = agent;
         this.playerHealth = 0;
         this.healingBehaviour = new HealingBehaviour(this.agent);
@@ -46,6 +46,7 @@ public class InZoneBehaviour extends TickerBehaviour {
      */
     @Override
     protected void onTick() {
+        if(this.agent.getCurrentZone() == null) return;
         List<AID> teamPlayersInZone = this.agent.getTeamPlayersInZone();
         List<AID> enemiesInZone = this.agent.getEnemyPlayersInZone();
         AID bestZone = this.getBestZone();
@@ -104,6 +105,7 @@ public class InZoneBehaviour extends TickerBehaviour {
 
         /** Should move to other zone */
         } else {
+            this.agent.removeBehaviour(this);
             this.agent.addBehaviour(new MovingBehaviour(this.agent, this.agent.getCurrentZone(), MovementType.LEFT));
             this.agent.addBehaviour(new MovingBehaviour(this.agent, bestZone, MovementType.ENTERED));
         }

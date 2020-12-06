@@ -27,7 +27,7 @@ public class MovingBehaviour extends WakerBehaviour {
     private static final int IN_ZONE_TICK = 1000;
 
     public MovingBehaviour(Player agent, AID zone, MovementType moveType) {
-        super(agent, getTimeout(agent, zone, moveType));
+        super(agent, getTimeout(agent, zone, moveType) / agent.speedFactor);
         this.agent = agent;
         this.zone = zone;
         this.agent.getSwingGUIGame().getZoneInformationPanel().addPlayerMovingToZone(this.agent.getAID(), this.zone, 10);
@@ -106,7 +106,6 @@ public class MovingBehaviour extends WakerBehaviour {
             e.printStackTrace();
         }
 
-        this.agent.removeBehaviour(this.agent.getInZoneBehaviour());
         this.cleanZoneInfo();
 
         this.agent.setCurrentZone(null);

@@ -25,7 +25,7 @@ public class GameServerRun extends TickerBehaviour {
     private final ArrayList<Integer> teamTickets;
 
     public GameServerRun(GameServer agent) {
-        super(agent, drainageTick);
+        super(agent, drainageTick / agent.speedFactor);
 
         this.agent = agent;
         this.teamTickets = agent.getTeamTickets();

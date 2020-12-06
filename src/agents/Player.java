@@ -28,6 +28,7 @@ public class Player extends Logger {
     private double velocity = 1;
     private final AID gameServerAgent = new sajas.core.AID("game-server", false);
     private long moveTimeout = 0;
+    public final int speedFactor;
 
     private AID currentZone;
     private AID spawnZone;
@@ -42,11 +43,12 @@ public class Player extends Logger {
     private Map<AID, Integer> teamPlayersInZoneHealth = new HashMap<>();
     private InZoneBehaviour inZoneBehaviour;
 
-    public Player(Team team, PlayerClass playerClass, SwingGUIGame swingGUIGame, SwingGUIStats swingGUIStats) {
+    public Player(Team team, PlayerClass playerClass, SwingGUIGame swingGUIGame, SwingGUIStats swingGUIStats, int speedFactor) {
         super(swingGUIGame, swingGUIStats);
         this.team = team;
         this.playerClass = playerClass;
         this.setInitialAgentStats();
+        this.speedFactor = speedFactor;
     }
 
     public void setInitialAgentStats() {

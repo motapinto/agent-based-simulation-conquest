@@ -27,7 +27,7 @@ public class HealingBehaviour extends WakerBehaviour {
     }
 
     public HealingBehaviour(Player agent, AID ally) {
-        super(agent, HEALING_TIMEOUT);
+        super(agent, HEALING_TIMEOUT / agent.speedFactor);
         this.agent = agent;
         this.heal(ally);
         this.canHeal = false;

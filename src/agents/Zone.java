@@ -26,6 +26,7 @@ public class Zone extends Logger {
     public ZoneType zoneType;
     public final Position position;
     private final int timeToBeCaptured;
+    public final int speedFactor;
 
     private ArrayList<AID> alliedAgents = new ArrayList<>();
     private ArrayList<AID> axisAgents = new ArrayList<>();
@@ -33,13 +34,14 @@ public class Zone extends Logger {
     private SubscriptionResponder subscriptionResponder;
     public List<AID> playerAgents = new ArrayList<>();
 
-    public Zone(Position position, ZoneType zoneType, Team team, int timeToBeCaptured, SwingGUIGame swingGUIGame, SwingGUIStats swingGUIStats) {
+    public Zone(Position position, ZoneType zoneType, Team team, int timeToBeCaptured, SwingGUIGame swingGUIGame, SwingGUIStats swingGUIStats, int speedFactor) {
         super(swingGUIGame, swingGUIStats);
         this.zoneTeam = team;
         this.position = position;
         this.zoneType = zoneType;
         this.timeToBeCaptured = timeToBeCaptured;
         this.gameServerAgent = new sajas.core.AID("game-server", false);
+        this.speedFactor = speedFactor;
     }
 
     @Override

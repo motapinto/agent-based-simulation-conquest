@@ -22,7 +22,7 @@ public class CapturingBehaviour extends TickerBehaviour {
 
 
     public CapturingBehaviour(Zone zoneAgent, int period){
-        super(zoneAgent, period);
+        super(zoneAgent, period / zoneAgent.speedFactor);
         this.zoneAgent = zoneAgent;
         this.lastCapturePoints = this.zoneAgent.getCapturePoints();
     }

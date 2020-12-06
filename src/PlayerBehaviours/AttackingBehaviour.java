@@ -39,7 +39,7 @@ public class AttackingBehaviour extends WakerBehaviour {
     }
 
     public AttackingBehaviour(Player agent, AID enemy) {
-        super(agent, getTimeout(agent));
+        super(agent, getTimeout(agent) / agent.speedFactor);
         this.agent = agent;
         this.attack(enemy);
         this.canAttack = false;

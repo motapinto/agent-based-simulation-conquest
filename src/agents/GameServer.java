@@ -23,14 +23,16 @@ public class GameServer extends Logger {
     private SubscriptionResponder subscriptionResponder;
     private boolean finished = false;
     private ArrayList<Integer> teamTickets = new ArrayList<>();
+    public final int speedFactor;
 
-    public GameServer(int zoneNumber, int playersPerTeam, int initialTickets, int gameTime, SwingGUIGame swingGUIGame, SwingGUIStats swingGUIStats) {
+    public GameServer(int zoneNumber, int playersPerTeam, int initialTickets, int gameTime, SwingGUIGame swingGUIGame, SwingGUIStats swingGUIStats, int speedFactor) {
         super(swingGUIGame, swingGUIStats);
 
         this.zoneNumber = zoneNumber;
         this.playersPerTeam = playersPerTeam;
         this.initialTickets = initialTickets;
         this.gameTime = gameTime;
+        this.speedFactor = speedFactor;
 
         for (int i = 0; i < 2; i++) {
             this.teamTickets.add(initialTickets);

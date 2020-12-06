@@ -164,6 +164,7 @@ public class ListeningBehaviour extends CyclicBehaviour {
         this.agent.setInitialAgentStats();
         this.agent.getSwingGUIGame().getZoneInformationPanel().addPlayerMovingToZone(this.agent.getAID(), this.agent.getCurrentZone(), 0);
         this.agent.getSwingGUIGame().getZoneInformationPanel().addUpdatePlayer(this.agent);
+        this.agent.removeBehaviour(this.agent.getInZoneBehaviour());
         this.agent.addBehaviour(new MovingBehaviour(this.agent, this.agent.getCurrentZone(), MovementType.LEFT));
         this.agent.addBehaviour(new MovingBehaviour(this.agent, this.agent.getSpawnZone(), MovementType.ENTERED));
         this.agent.logAction(this.agent.getLocalName() + " died, respawning in " + MovingBehaviour.RESPAWN_TIME / 1000 + "s");
