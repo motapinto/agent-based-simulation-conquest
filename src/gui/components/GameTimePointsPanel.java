@@ -13,6 +13,8 @@ public class GameTimePointsPanel extends JPanel {
     private JLabel alliedPointsLabel;
     private JLabel gameTimeLabel;
 
+    private boolean gameEnded = false;
+
     private final static int X = 0;
     private final static int Y = 0;
     private final static int WIDTH = 1500;
@@ -96,7 +98,7 @@ public class GameTimePointsPanel extends JPanel {
         Timer t = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(gameTime > 0) {
+                if(gameTime > 0 && !gameEnded) {
                     gameTime = gameTime - 1;
                     gameTimeLabel.setText("Game time (s): " + (gameTime));
                     gameTimeLabel.revalidate();
@@ -117,4 +119,9 @@ public class GameTimePointsPanel extends JPanel {
         this.axisPointsLabel.revalidate();
         this.revalidate();
     }
+
+    public void setGameEnded(boolean gameEnded) {
+        this.gameEnded = gameEnded;
+    }
+
 }

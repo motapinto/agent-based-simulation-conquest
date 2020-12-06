@@ -139,6 +139,7 @@ public class GameServerRun extends TickerBehaviour {
     }
 
     private void updateStatsGui(){
+        this.agent.getSwingGUIGame().getGameTimeAndPointsPanel().setGameEnded(true);
         if(this.teamTickets.get(0) > this.teamTickets.get(1))
             this.agent.getSwingGUIStats().addNewGame(this.teamTickets.get(0), this.teamTickets.get(1), this.agent.getSwingGUIGame().getGameNumber(), Team.ALLIED);
         else if(this.teamTickets.get(0) < this.teamTickets.get(1))

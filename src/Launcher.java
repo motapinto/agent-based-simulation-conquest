@@ -108,7 +108,11 @@ public class Launcher extends Repast3Launcher {
 
         playerClassPoints.addSequence("Medic", () -> pointsPerClass(PlayerClass.MEDIC), SwingGUIGame.GREEN, 5);
 
-        playerClassPoints.addSequence("Defender", () -> pointsPerClass(PlayerClass.SNIPER), new Color(0, 255, 0), 5);
+        playerClassPoints.addSequence("Sniper", new Sequence() {
+            public double getSValue() {
+                return  pointsPerClass(PlayerClass.SNIPER);
+            }
+        }, new Color(0, 255, 0), 5);
 
         playerClassPoints.addSequence("Assault", () -> pointsPerClass(PlayerClass.ASSAULT), new Color(255, 255, 0), 5);
 
