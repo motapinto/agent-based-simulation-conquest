@@ -30,7 +30,6 @@ public class GameServerRun extends TickerBehaviour {
         this.agent = agent;
         this.teamTickets = agent.getTeamTickets();
 
-
         this.agent.getSwingGUIGame().startGame();
         this.timeEnd = System.currentTimeMillis() + this.agent.getGameTime() * 1000L;
         this.agent.logAction("Game started. Allied: " + this.teamTickets.get(0) + " | Axis: " + this.teamTickets.get(1));
