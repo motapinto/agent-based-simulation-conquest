@@ -8,7 +8,6 @@ import data.Team;
 import data.ZoneType;
 import gui.SwingGUIGame;
 import gui.SwingGUIStats;
-import jade.core.AID;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.util.ExtendedProperties;
@@ -21,9 +20,8 @@ import sajas.wrapper.ContainerController;
 import uchicago.src.sim.analysis.OpenSequenceGraph;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
-import uchicago.src.sim.games.Game;
-import uchicago.src.sim.gui.DisplaySurface;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -97,18 +95,10 @@ public class Launcher extends Repast3Launcher {
         zonesCaptured.setAxisTitles("time", "n");
 
         // plot number of different existing colors
-        zonesCaptured.addSequence("Axis", new Sequence() {
-            public double getSValue() {
-                return zonesPerTeam(Team.AXIS);
-            }
-        }, SwingGUIGame.RED, 5);
+        zonesCaptured.addSequence("Axis",() -> zonesPerTeam(Team.AXIS), SwingGUIGame.RED, 5);
 
         // plot number of agents with the most abundant color
-        zonesCaptured.addSequence("Allied", new Sequence() {
-            public double getSValue() {
-                return  zonesPerTeam(Team.ALLIED);
-            }
-        }, SwingGUIGame.GREEN, 5);
+        zonesCaptured.addSequence("Allied", () -> zonesPerTeam(Team.ALLIED), SwingGUIGame.GREEN, 5);
 
         zonesCaptured.setYRange(0, zones.size());
         zonesCaptured.display();
@@ -117,29 +107,13 @@ public class Launcher extends Repast3Launcher {
         playerClassPoints = new OpenSequenceGraph("Player class points", this);
         playerClassPoints.setAxisTitles("time", "n");
 
-        playerClassPoints.addSequence("Defender", new Sequence() {
-            public double getSValue() {
-                return  pointsPerClass(PlayerClass.DEFENDER);
-            }
-        }, SwingGUIGame.RED, 5);
+        playerClassPoints.addSequence("Defender", () -> pointsPerClass(PlayerClass.DEFENDER), SwingGUIGame.RED, 5);
 
-        playerClassPoints.addSequence("Medic", new Sequence() {
-            public double getSValue() {
-                return  pointsPerClass(PlayerClass.MEDIC);
-            }
-        }, SwingGUIGame.GREEN, 5);
+        playerClassPoints.addSequence("Medic", () -> pointsPerClass(PlayerClass.MEDIC), SwingGUIGame.GREEN, 5);
 
-        playerClassPoints.addSequence("Defender", new Sequence() {
-            public double getSValue() {
-                return  pointsPerClass(PlayerClass.SNIPER);
-            }
-        }, new Color(0, 255, 0), 5);
+        playerClassPoints.addSequence("Defender", () -> pointsPerClass(PlayerClass.SNIPER), new Color(0, 255, 0), 5);
 
-        playerClassPoints.addSequence("Assault", new Sequence() {
-            public double getSValue() {
-                return  pointsPerClass(PlayerClass.ASSAULT);
-            }
-        }, new Color(255, 255, 0), 5);
+        playerClassPoints.addSequence("Assault", () -> pointsPerClass(PlayerClass.ASSAULT), new Color(255, 255, 0), 5);
 
         playerClassPoints.setYRange(0, 100);
         playerClassPoints.display();
