@@ -123,5 +123,4 @@ public class GameTimePointsPanel extends JPanel {
     public void setGameEnded(boolean gameEnded) {
         this.gameEnded = gameEnded;
     }
-
 }

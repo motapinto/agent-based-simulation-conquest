@@ -132,14 +132,21 @@ public class Launcher extends Repast3Launcher {
 
     private double pointsPerClass(PlayerClass playerClass){
         int counter = 0;
+        int numberOfPlayers = 0;
         for(Player player: alliedPlayers){
-            if(player.getPlayerClass().equals(playerClass))
-                counter+= player.getPoints();
+            if(player.getPlayerClass().equals(playerClass)) {
+                numberOfPlayers++;
+                counter += player.getPoints();
+            }
         }
         for(Player player: axisPlayers){
-            if(player.getPlayerClass().equals(playerClass))
+            if(player.getPlayerClass().equals(playerClass)){
+                numberOfPlayers++;
                 counter+= player.getPoints();
+            }
         }
+
+        counter /= numberOfPlayers;
 
         if(counter > playerClassPoints.getYRange()[1])
             playerClassPoints.setYRange(0, counter);
