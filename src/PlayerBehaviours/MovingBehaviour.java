@@ -26,6 +26,12 @@ public class MovingBehaviour extends WakerBehaviour {
     private static final int TRAVEL_TIME_FACTOR = 200;
     private static final int IN_ZONE_TICK = 1000;
 
+    // Independent variables
+    public static double MEDIC_VELOCITY = 1.7;
+    public static double ASSAULT_VELOCITY = 2;
+    public static double SNIPER_VELOCITY = 1.7;
+    public static double DEFENDER_VELOCITY = 1.5;
+
     public MovingBehaviour(Player agent, AID zone, MovementType moveType) {
         super(agent, getTimeout(agent, zone, moveType) / agent.speedFactor);
         this.agent = agent;

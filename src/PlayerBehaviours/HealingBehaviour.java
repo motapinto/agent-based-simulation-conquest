@@ -20,6 +20,12 @@ public class HealingBehaviour extends WakerBehaviour {
     private static final int MAX_HEAL = 100;
     private static final int HEALING_TIMEOUT = 5000;
 
+    // Independent variables
+    public static int MEDIC_HEALTH = 150;
+    public static int ASSAULT_HEALTH = 100;
+    public static int SNIPER_HEALTH = 100;
+    public static int DEFENDER_HEALTH = 200;
+
     public HealingBehaviour(Player agent) {
         super(agent, 0);
         this.agent = agent;

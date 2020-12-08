@@ -1,3 +1,6 @@
+import PlayerBehaviours.AttackingBehaviour;
+import PlayerBehaviours.HealingBehaviour;
+import PlayerBehaviours.MovingBehaviour;
 import agents.GameServer;
 import agents.Logger;
 import agents.Player;
@@ -36,8 +39,8 @@ import java.util.logging.Level;
 
 public class Launcher extends Repast3Launcher {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(Launcher.class.getName());
-    private String zonesFile = "1.txt", axisPlayersFile = "1.txt", alliedPlayersFile = "1.txt";
-    private int initialTickets = 100, gameTime = 100, speedFactor = 20;
+    private String MAP = "map1.txt", TEAM_AXIS = "team_1.txt", TEAM_ALLIED = "team_2.txt";
+    private int INITIAL_TICKETS = 100, TIME = 100, SPEED_FACTOR = 20;
     private OpenSequenceGraph plot;
     private SwingGUIStats swingGUIStats;
     private SwingGUIGame swingGUIGame;
@@ -50,6 +53,22 @@ public class Launcher extends Repast3Launcher {
     private List<Player> alliedPlayers;
     private List<Player> axisPlayers;
 
+    // Independent variables
+    private int MEDIC_ATTACK_FACTOR = 1;
+    private int ASSAULT_ATTACK_FACTOR = 1;
+    private int SNIPER_ATTACK_FACTOR = 1;
+    private int DEFENDER_ATTACK_FACTOR = 1;
+
+    private double MEDIC_VELOCITY = 1.7;
+    private double ASSAULT_VELOCITY = 2;
+    private double SNIPER_VELOCITY = 1.7;
+    private double DEFENDER_VELOCITY = 1.5;
+
+    private int MEDIC_HEALTH = 150;
+    private int ASSAULT_HEALTH = 100;
+    private int SNIPER_HEALTH = 100;
+    private int DEFENDER_HEALTH = 200;
+
     public static void main(String[] args) {
         SimInit init = new SimInit();
         Launcher l = new Launcher();
@@ -58,7 +77,12 @@ public class Launcher extends Repast3Launcher {
 
     @Override
     public String[] getInitParam() {
-        return new String[] {"zonesFile", "axisPlayersFile", "alliedPlayersFile", "initialTickets", "gameTime", "speedFactor"};
+        return new String[] {"MAP", "TEAM_AXIS", "TEAM_ALLIED", "INITIAL_TICKETS", "TIME", "SPEED_FACTOR",
+            " ",
+            "MEDIC_ATTACK_FACTOR", "ASSAULT_ATTACK_FACTOR", "SNIPER_ATTACK_FACTOR", "DEFENDER_ATTACK_FACTOR",
+            "MEDIC_VELOCITY", "ASSAULT_VELOCITY", "SNIPER_VELOCITY", "DEFENDER_VELOCITY",
+            "MEDIC_HEALTH", "ASSAULT_HEALTH", "SNIPER_HEALTH", "DEFENDER_HEALTH"
+        };
     }
 
     @Override
@@ -146,7 +170,7 @@ public class Launcher extends Repast3Launcher {
             }
         }
 
-        counter /= numberOfPlayers;
+        counter /= numberOfPlayers + 1;
 
         if(counter > playerClassPoints.getYRange()[1])
             playerClassPoints.setYRange(0, counter);
@@ -183,7 +207,7 @@ public class Launcher extends Repast3Launcher {
 
         List<Position> zonePositions;
         try {
-            zonePositions = parseZones(zonesFile);
+            zonePositions = parseZones(MAP);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return;
@@ -198,8 +222,8 @@ public class Launcher extends Repast3Launcher {
         List<PlayerClass> axisPlayers;
 
         try {
-            alliedPlayers = parsePlayers(alliedPlayersFile);
-            axisPlayers = parsePlayers(axisPlayersFile);
+            alliedPlayers = parsePlayers(TEAM_ALLIED);
+            axisPlayers = parsePlayers(TEAM_AXIS);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return;
@@ -242,35 +266,35 @@ public class Launcher extends Repast3Launcher {
             swingGUIGame.closeSwingGUI();
         }
 
-        swingGUIGame = new SwingGUIGame(0, initialTickets, gameTime);
+        swingGUIGame = new SwingGUIGame(0, INITIAL_TICKETS, TIME);
         Thread threadGame = new Thread(swingGUIGame);
         threadGame.start();
 
         List<AgentController> agentsList = new ArrayList<>();
-        gameServer =  new GameServer(zonePositions.size() - 2, axisPlayersClass.size(), initialTickets, gameTime, swingGUIGame, swingGUIStats, speedFactor);
+        gameServer =  new GameServer(zonePositions.size() - 2, axisPlayersClass.size(), INITIAL_TICKETS, TIME, swingGUIGame, swingGUIStats, SPEED_FACTOR);
         agentsList.add(container.acceptNewAgent("game-server", gameServer));
 
         zones = new ArrayList<>();
-        zones.add(new Zone(zonePositions.get(0), ZoneType.BASE, Team.ALLIED, 0, swingGUIGame, swingGUIStats, speedFactor));
-        zones.add(new Zone(zonePositions.get(1), ZoneType.BASE, Team.AXIS, 0, swingGUIGame, swingGUIStats, speedFactor));
+        zones.add(new Zone(zonePositions.get(0), ZoneType.BASE, Team.ALLIED, 0, swingGUIGame, swingGUIStats, SPEED_FACTOR));
+        zones.add(new Zone(zonePositions.get(1), ZoneType.BASE, Team.AXIS, 0, swingGUIGame, swingGUIStats, SPEED_FACTOR));
         agentsList.add(container.acceptNewAgent("allied-spawn", zones.get(0)));
         agentsList.add(container.acceptNewAgent("axis-spawn", zones.get(1)));
 
         for (int j = 2; j < zonePositions.size(); j++) {
             char c = (char) ('A' + j - 2);
-            zones.add(new Zone(zonePositions.get(j), ZoneType.CAPTURABLE, Team.NEUTRAL, 5, swingGUIGame, swingGUIStats, speedFactor));
+            zones.add(new Zone(zonePositions.get(j), ZoneType.CAPTURABLE, Team.NEUTRAL, 5, swingGUIGame, swingGUIStats, SPEED_FACTOR));
             agentsList.add(container.acceptNewAgent("zone-" + c, zones.get(j)));
         }
 
         alliedPlayers = new ArrayList<>();
         for (int j = 0; j < alliedPlayersClass.size(); j++) {
-            alliedPlayers.add(new Player(Team.ALLIED, alliedPlayersClass.get(j), swingGUIGame, swingGUIStats, speedFactor));
+            alliedPlayers.add(new Player(Team.ALLIED, alliedPlayersClass.get(j), swingGUIGame, swingGUIStats, SPEED_FACTOR));
             agentsList.add(container.acceptNewAgent("allied-" + j + "-" + alliedPlayersClass.get(j).toString().toLowerCase(), alliedPlayers.get(j)));
         }
 
         axisPlayers = new ArrayList<>();
         for (int j = 0; j < axisPlayersClass.size(); j++) {
-            axisPlayers.add(new Player(Team.AXIS, axisPlayersClass.get(j), swingGUIGame, swingGUIStats, speedFactor));
+            axisPlayers.add(new Player(Team.AXIS, axisPlayersClass.get(j), swingGUIGame, swingGUIStats, SPEED_FACTOR));
             agentsList.add(container.acceptNewAgent("axis-" + j + "-" + axisPlayersClass.get(j).toString().toLowerCase(), axisPlayers.get(j)));
         }
 
@@ -331,51 +355,158 @@ public class Launcher extends Repast3Launcher {
         super.stopSimulation();
     }
 
-    public String getZonesFile() {
-        return zonesFile;
+    public String getMAP() {
+        return MAP;
     }
 
-    public void setZonesFile(String zonesFile) {
-        this.zonesFile = zonesFile;
+    public void setMAP(String MAP) {
+        this.MAP = MAP;
     }
 
-    public String getAxisPlayersFile() {
-        return axisPlayersFile;
+    public String getTEAM_AXIS() {
+        return TEAM_AXIS;
     }
 
-    public void setAxisPlayersFile(String axisPlayersFile) {
-        this.axisPlayersFile = axisPlayersFile;
+    public void setTEAM_AXIS(String TEAM_AXIS) {
+        this.TEAM_AXIS = TEAM_AXIS;
     }
 
-    public String getAlliedPlayersFile() {
-        return alliedPlayersFile;
+    public String getTEAM_ALLIED() {
+        return TEAM_ALLIED;
     }
 
-    public void setAlliedPlayersFile(String alliedPlayersFile) {
-        this.alliedPlayersFile = alliedPlayersFile;
+    public void setTEAM_ALLIED(String TEAM_ALLIED) {
+        this.TEAM_ALLIED = TEAM_ALLIED;
     }
 
-    public int getInitialTickets() {
-        return initialTickets;
+    public int getINITIAL_TICKETS() {
+        return INITIAL_TICKETS;
     }
 
-    public void setInitialTickets(int initialTickets) {
-        this.initialTickets = initialTickets;
+    public void setINITIAL_TICKETS(int INITIAL_TICKETS) {
+        this.INITIAL_TICKETS = INITIAL_TICKETS;
     }
 
-    public int getGameTime() {
-        return gameTime;
+    public int getTIME() {
+        return TIME;
     }
 
-    public void setGameTime(int gameTime) {
-        this.gameTime = gameTime;
+    public void setTIME(int TIME) {
+        this.TIME = TIME;
     }
 
-    public int getSpeedFactor() {
-        return speedFactor;
+    public int getSPEED_FACTOR() {
+        return SPEED_FACTOR;
     }
 
-    public void setSpeedFactor(int speedFactor) {
-        this.speedFactor = speedFactor;
+    public void setSPEED_FACTOR(int SPEED_FACTOR) {
+        this.SPEED_FACTOR = SPEED_FACTOR;
+    }
+
+    // Most important independent variables below
+    public int getMEDIC_ATTACK_FACTOR() {
+        return MEDIC_ATTACK_FACTOR;
+    }
+
+    public void setMEDIC_ATTACK_FACTOR(int MEDIC_ATTACK_FACTOR) {
+        this.MEDIC_ATTACK_FACTOR = MEDIC_ATTACK_FACTOR;
+    }
+
+    public int getASSAULT_ATTACK_FACTOR() {
+        return ASSAULT_ATTACK_FACTOR;
+    }
+
+    public void setASSAULT_ATTACK_FACTOR(int ASSAULT_ATTACK_FACTOR) {
+        this.ASSAULT_ATTACK_FACTOR = ASSAULT_ATTACK_FACTOR;
+    }
+
+    public int getSNIPER_ATTACK_FACTOR() {
+        return SNIPER_ATTACK_FACTOR;
+    }
+
+    public void setSNIPER_ATTACK_FACTOR(int SNIPER_ATTACK_FACTOR) {
+        this.SNIPER_ATTACK_FACTOR = SNIPER_ATTACK_FACTOR;
+        AttackingBehaviour.SNIPER_ATTACK_FACTOR = SNIPER_ATTACK_FACTOR;
+    }
+
+    public int getDEFENDER_ATTACK_FACTOR() {
+        return DEFENDER_ATTACK_FACTOR;
+    }
+
+    public void setDEFENDER_ATTACK_FACTOR(int DEFENDER_ATTACK_FACTOR) {
+        this.DEFENDER_ATTACK_FACTOR = DEFENDER_ATTACK_FACTOR;
+        AttackingBehaviour.DEFENDER_ATTACK_FACTOR = DEFENDER_ATTACK_FACTOR;
+    }
+
+    public double getMEDIC_VELOCITY() {
+        return MEDIC_VELOCITY;
+    }
+
+    public void setMEDIC_VELOCITY(double MEDIC_VELOCITY) {
+        this.MEDIC_VELOCITY = MEDIC_VELOCITY;
+        MovingBehaviour.MEDIC_VELOCITY = MEDIC_VELOCITY;
+    }
+
+    public double getASSAULT_VELOCITY() {
+        return ASSAULT_VELOCITY;
+    }
+
+    public void setASSAULT_VELOCITY(double ASSAULT_VELOCITY) {
+        this.ASSAULT_VELOCITY = ASSAULT_VELOCITY;
+        MovingBehaviour.ASSAULT_VELOCITY = ASSAULT_VELOCITY;
+    }
+
+    public double getSNIPER_VELOCITY() {
+        return SNIPER_VELOCITY;
+    }
+
+    public void setSNIPER_VELOCITY(double SNIPER_VELOCITY) {
+        this.SNIPER_VELOCITY = SNIPER_VELOCITY;
+        MovingBehaviour.SNIPER_VELOCITY = SNIPER_VELOCITY;
+    }
+
+    public double getDEFENDER_VELOCITY() {
+        return DEFENDER_VELOCITY;
+    }
+
+    public void setDEFENDER_VELOCITY(double DEFENDER_VELOCITY) {
+        this.DEFENDER_VELOCITY = DEFENDER_VELOCITY;
+        MovingBehaviour.DEFENDER_VELOCITY = DEFENDER_VELOCITY;
+    }
+
+    public int getMEDIC_HEALTH() {
+        return MEDIC_HEALTH;
+    }
+
+    public void setMEDIC_HEALTH(int MEDIC_HEALTH) {
+        this.MEDIC_HEALTH = MEDIC_HEALTH;
+        HealingBehaviour.MEDIC_HEALTH = MEDIC_HEALTH;
+    }
+
+    public int getASSAULT_HEALTH() {
+        return ASSAULT_HEALTH;
+    }
+
+    public void setASSAULT_HEALTH(int ASSAULT_HEALTH) {
+        this.ASSAULT_HEALTH = ASSAULT_HEALTH;
+        HealingBehaviour.ASSAULT_HEALTH = ASSAULT_HEALTH;
+    }
+
+    public int getSNIPER_HEALTH() {
+        return SNIPER_HEALTH;
+    }
+
+    public void setSNIPER_HEALTH(int SNIPER_HEALTH) {
+        this.SNIPER_HEALTH = SNIPER_HEALTH;
+        HealingBehaviour.SNIPER_HEALTH = SNIPER_HEALTH;
+    }
+
+    public int getDEFENDER_HEALTH() {
+        return DEFENDER_HEALTH;
+    }
+
+    public void setDEFENDER_HEALTH(int DEFENDER_HEALTH) {
+        this.DEFENDER_HEALTH = DEFENDER_HEALTH;
+        HealingBehaviour.DEFENDER_HEALTH = DEFENDER_HEALTH;
     }
 }

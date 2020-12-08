@@ -1,9 +1,6 @@
 package agents;
 
-import PlayerBehaviours.InZoneBehaviour;
-import PlayerBehaviours.ListeningBehaviour;
-import PlayerBehaviours.MovingBehaviour;
-import PlayerBehaviours.ZoneSubscriber;
+import PlayerBehaviours.*;
 import SharedBehaviours.GameServerSubscriber;
 import data.MovementType;
 import data.PlayerClass;
@@ -54,20 +51,20 @@ public class Player extends Logger {
     public void setInitialAgentStats() {
         switch (this.playerClass) {
             case ASSAULT:
-                this.velocity = 2;
-                this.health = 100;
+                this.velocity = MovingBehaviour.ASSAULT_VELOCITY;
+                this.health = HealingBehaviour.ASSAULT_HEALTH;
                 break;
             case MEDIC:
-                this.velocity = 1.7;
-                this.health = 150;
+                this.velocity = MovingBehaviour.MEDIC_VELOCITY;
+                this.health = HealingBehaviour.MEDIC_HEALTH;
                 break;
             case SNIPER:
-                this.velocity = 1.7;
-                this.health = 100;
+                this.velocity = MovingBehaviour.SNIPER_VELOCITY;
+                this.health = HealingBehaviour.SNIPER_HEALTH;
                 break;
             case DEFENDER:
-                this.velocity = 1.5;
-                this.health = 200;
+                this.velocity = MovingBehaviour.DEFENDER_VELOCITY;
+                this.health = HealingBehaviour.DEFENDER_HEALTH;
                 break;
         }
     }

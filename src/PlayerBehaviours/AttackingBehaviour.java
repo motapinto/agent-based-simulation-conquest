@@ -27,10 +27,11 @@ public class AttackingBehaviour extends WakerBehaviour {
     private final static int MEDIC_ATTACK_TIMEOUT = 1000;
     private final static int SNIPER_ATTACK_TIMEOUT = 2000;
 
-    private static final int ASSAULT_ATTACK_FACTOR = 1;
-    private static final int DEFENDER_ATTACK_FACTOR = 1;
-    private static final int MEDIC_ATTACK_FACTOR = 1;
-    private static final int SNIPER_ATTACK_FACTOR = 3;
+    // Independent variables
+    public static int ASSAULT_ATTACK_FACTOR = 1;
+    public static int DEFENDER_ATTACK_FACTOR = 1;
+    public static int MEDIC_ATTACK_FACTOR = 1;
+    public static int SNIPER_ATTACK_FACTOR = 3;
 
     public AttackingBehaviour(Player agent) {
         super(agent, 0);
