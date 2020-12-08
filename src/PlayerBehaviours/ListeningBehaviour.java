@@ -1,5 +1,6 @@
 package PlayerBehaviours;
 
+import Execute.Launcher;
 import agents.DirectoryFacilitator;
 import agents.Player;
 import data.MovementType;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static data.AgentType.PLAYER;
+import static data.MessageType.ATTACK;
 import static data.MessageType.KILLED;
 
 public class ListeningBehaviour extends CyclicBehaviour {
@@ -96,6 +98,9 @@ public class ListeningBehaviour extends CyclicBehaviour {
                     return;
                 }
 
+                if(simpleMessage.getMessageType().equals(ATTACK))
+                    this.removeEdge(msg.getSender().getLocalName());
+
                 if(!playerActionMessage.getZone().equals(this.agent.getCurrentZone())) return;
                 int value = playerActionMessage.getActionValue();
                 this.agent.setHealth(this.agent.getHealth() + value);
@@ -132,6 +137,10 @@ public class ListeningBehaviour extends CyclicBehaviour {
                 break;
             }
         }
+    }
+
+    private void removeEdge(String agentName){
+        this.agent.getMyNode().removeEdgesTo(Launcher.getNode(agentName));
     }
 
     private void updateTimeout(PlayersInZoneMessage message) {

@@ -1,3 +1,5 @@
+package Execute;
+
 import PlayerBehaviours.AttackingBehaviour;
 import PlayerBehaviours.HealingBehaviour;
 import PlayerBehaviours.MovingBehaviour;
@@ -25,10 +27,8 @@ import uchicago.src.sim.analysis.OpenSequenceGraph;
 import uchicago.src.sim.analysis.Sequence;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
-import uchicago.src.sim.gui.DisplaySurface;
-import uchicago.src.sim.gui.Network2DDisplay;
-import uchicago.src.sim.gui.OvalNetworkItem;
-import uchicago.src.sim.gui.RectNetworkItem;
+import uchicago.src.sim.gui.*;
+import uchicago.src.sim.network.DefaultDrawableEdge;
 import uchicago.src.sim.network.DefaultDrawableNode;
 
 import java.awt.*;
@@ -88,7 +88,6 @@ public class Launcher extends Repast3Launcher {
     @Override
     public String[] getInitParam() {
         return new String[] {"MAP", "TEAM_AXIS", "TEAM_ALLIED", "INITIAL_TICKETS", "TIME", "SPEED_FACTOR",
-            " ",
             "MEDIC_ATTACK_FACTOR", "ASSAULT_ATTACK_FACTOR", "SNIPER_ATTACK_FACTOR", "DEFENDER_ATTACK_FACTOR",
             "MEDIC_VELOCITY", "ASSAULT_VELOCITY", "SNIPER_VELOCITY", "DEFENDER_VELOCITY",
             "MEDIC_HEALTH", "ASSAULT_HEALTH", "SNIPER_HEALTH", "DEFENDER_HEALTH"
@@ -314,7 +313,7 @@ public class Launcher extends Repast3Launcher {
         for (int j = 0; j < alliedPlayersClass.size(); j++) {
             Player alliedPlayer = new Player(Team.ALLIED, alliedPlayersClass.get(j), swingGUIGame, swingGUIStats, SPEED_FACTOR);
             DefaultDrawableNode node =
-                    generateNode("Allied-" + j, SwingGUIGame.GREEN, 100, (HEIGHT/alliedPlayersClass.size())*j);
+                    generateNode("allied-" + j + "-" + alliedPlayersClass.get(j).toString().toLowerCase(), SwingGUIGame.GREEN, 100, (HEIGHT/alliedPlayersClass.size())*j);
             nodes.add(node);
             alliedPlayer.setNode(node);
             alliedPlayers.add(alliedPlayer);
@@ -325,12 +324,19 @@ public class Launcher extends Repast3Launcher {
         for (int j = 0; j < axisPlayersClass.size(); j++) {
             Player axisPlayer = new Player(Team.AXIS, axisPlayersClass.get(j), swingGUIGame, swingGUIStats, SPEED_FACTOR);
             DefaultDrawableNode node =
-                    generateNode("Axis-" + j, SwingGUIGame.RED, WIDTH-200, (HEIGHT/alliedPlayersClass.size())*j);
+                    generateNode("axis-" + j + "-" + axisPlayersClass.get(j).toString().toLowerCase(), SwingGUIGame.RED, WIDTH-200, (HEIGHT/alliedPlayersClass.size())*j);
             nodes.add(node);
             axisPlayer.setNode(node);
             axisPlayers.add(axisPlayer);
             agentsList.add(container.acceptNewAgent("axis-" + j + "-" + axisPlayersClass.get(j).toString().toLowerCase(), axisPlayer));
         }
+
+
+       /* DefaultDrawableNode to = nodes.get(0);
+        DefaultDrawableEdge edge = new DefaultDrawableEdge(nodes.get(1), to);
+        edge.setLabel("Attack");
+        edge.setColor(Color.RED);
+        nodes.get(1).addOutEdge(edge);*/
 
         for (AgentController agent : agentsList) {
             agent.start();
@@ -338,7 +344,7 @@ public class Launcher extends Repast3Launcher {
     }
 
     private DefaultDrawableNode generateNode(String label, Color color, int x, int y) {
-        OvalNetworkItem oval = new OvalNetworkItem(x,y);
+        RectNetworkItem oval = new RectNetworkItem(x,y);
         oval.allowResizing(true);
         oval.setHeight(50);
         oval.setWidth(120);
