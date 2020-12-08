@@ -6,7 +6,10 @@ import data.message.PlayerActionMessage;
 import jade.core.AID;
 import sajas.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
+import uchicago.src.sim.network.DefaultDrawableNode;
+import uchicago.src.sim.network.Edge;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.Random;
 
@@ -98,10 +101,21 @@ public class AttackingBehaviour extends WakerBehaviour {
         }
 
         msg.addReceiver(enemy);
+
+        this.sendMessageDrawEdge(enemy.getLocalName());
         this.agent.send(msg);
         this.agent.setPoints(this.agent.getPoints() + damage);
         this.agent.getSwingGUIGame().getTeamCompPanel().addUpdateTeamPlayer(this.agent.getTeam(), this.agent.getAID(), this.agent.getPoints(), this.agent.getPlayerClass());
         this.agent.logAction(this.agent.getLocalName() + " attacking " + enemy.getLocalName() + " for " + damage + "hp");
+    }
+
+    public void sendMessageDrawEdge(String agentName){
+        if(this.agent.getMyNode() != null) {
+           /* DefaultDrawableNode to = Launcher.getNode(agentName);
+            Edge edge = new Edge(this.agent.getMyNode(), to);
+            edge.setColor(Color.RED);
+            myNode.addOutEdge(edge);*/
+        }
     }
 
     public int getDamage(int damage) {

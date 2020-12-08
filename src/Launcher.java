@@ -16,6 +16,7 @@ import jade.core.ProfileImpl;
 import jade.util.ExtendedProperties;
 import jade.util.leap.Properties;
 import jade.wrapper.StaleProxyException;
+import org.w3c.dom.css.Rect;
 import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.AgentController;
@@ -24,6 +25,11 @@ import uchicago.src.sim.analysis.OpenSequenceGraph;
 import uchicago.src.sim.analysis.Sequence;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
+import uchicago.src.sim.gui.DisplaySurface;
+import uchicago.src.sim.gui.Network2DDisplay;
+import uchicago.src.sim.gui.OvalNetworkItem;
+import uchicago.src.sim.gui.RectNetworkItem;
+import uchicago.src.sim.network.DefaultDrawableNode;
 
 import java.awt.*;
 import java.io.File;
@@ -47,11 +53,15 @@ public class Launcher extends Repast3Launcher {
     private ContainerController container;
     private OpenSequenceGraph zonesCaptured;
     private OpenSequenceGraph playerClassPoints;
+    private DisplaySurface dsurf;
+    private int WIDTH = 800, HEIGHT = 800;
+
 
     private GameServer gameServer;
     private List<Zone> zones;
     private List<Player> alliedPlayers;
     private List<Player> axisPlayers;
+    private static List<DefaultDrawableNode> nodes;
 
     // Independent variables
     private int MEDIC_ATTACK_FACTOR = 1;
@@ -99,7 +109,7 @@ public class Launcher extends Repast3Launcher {
     public void begin() {
         super.begin();
         buildCharts();
-        buildSchedule();
+        buildDisplaySchedule();
     }
 
     private void buildCharts() {
@@ -169,15 +179,27 @@ public class Launcher extends Repast3Launcher {
                 counter+= player.getPoints();
             }
         }
-
-        counter /= numberOfPlayers + 1;
+        if(numberOfPlayers != 0)
+            counter /= numberOfPlayers;
 
         if(counter > playerClassPoints.getYRange()[1])
             playerClassPoints.setYRange(0, counter);
+
         return counter;
     }
 
-    private void buildSchedule() {
+    private void buildDisplaySchedule() {
+        // display surface
+        if (dsurf != null) dsurf.dispose();
+        dsurf = new DisplaySurface(this, "Service Consumer/Provider Display");
+        registerDisplaySurface("Service Consumer/Provider Display", dsurf);
+        Network2DDisplay display = new Network2DDisplay(nodes,WIDTH,HEIGHT);
+        dsurf.addDisplayableProbeable(display, "Network Display");
+        dsurf.addZoomable(display);
+        addSimEventListener(dsurf);
+        dsurf.display();
+
+        getSchedule().scheduleActionAtInterval(1, dsurf, "updateDisplay", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, plot, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, zonesCaptured, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, playerClassPoints, "step", Schedule.LAST);
@@ -266,6 +288,8 @@ public class Launcher extends Repast3Launcher {
             swingGUIGame.closeSwingGUI();
         }
 
+        nodes = new ArrayList<>();
+
         swingGUIGame = new SwingGUIGame(0, INITIAL_TICKETS, TIME);
         Thread threadGame = new Thread(swingGUIGame);
         threadGame.start();
@@ -288,19 +312,42 @@ public class Launcher extends Repast3Launcher {
 
         alliedPlayers = new ArrayList<>();
         for (int j = 0; j < alliedPlayersClass.size(); j++) {
-            alliedPlayers.add(new Player(Team.ALLIED, alliedPlayersClass.get(j), swingGUIGame, swingGUIStats, SPEED_FACTOR));
+            Player alliedPlayer = new Player(Team.ALLIED, alliedPlayersClass.get(j), swingGUIGame, swingGUIStats, SPEED_FACTOR);
+            DefaultDrawableNode node =
+                    generateNode("Allied-" + j, SwingGUIGame.GREEN, 100, (HEIGHT/alliedPlayersClass.size())*j);
+            nodes.add(node);
+            alliedPlayer.setNode(node);
+            alliedPlayers.add(alliedPlayer);
             agentsList.add(container.acceptNewAgent("allied-" + j + "-" + alliedPlayersClass.get(j).toString().toLowerCase(), alliedPlayers.get(j)));
         }
 
         axisPlayers = new ArrayList<>();
         for (int j = 0; j < axisPlayersClass.size(); j++) {
-            axisPlayers.add(new Player(Team.AXIS, axisPlayersClass.get(j), swingGUIGame, swingGUIStats, SPEED_FACTOR));
-            agentsList.add(container.acceptNewAgent("axis-" + j + "-" + axisPlayersClass.get(j).toString().toLowerCase(), axisPlayers.get(j)));
+            Player axisPlayer = new Player(Team.AXIS, axisPlayersClass.get(j), swingGUIGame, swingGUIStats, SPEED_FACTOR);
+            DefaultDrawableNode node =
+                    generateNode("Axis-" + j, SwingGUIGame.RED, WIDTH-200, (HEIGHT/alliedPlayersClass.size())*j);
+            nodes.add(node);
+            axisPlayer.setNode(node);
+            axisPlayers.add(axisPlayer);
+            agentsList.add(container.acceptNewAgent("axis-" + j + "-" + axisPlayersClass.get(j).toString().toLowerCase(), axisPlayer));
         }
 
-        for (AgentController agent : agentsList){
+        for (AgentController agent : agentsList) {
             agent.start();
         }
+    }
+
+    private DefaultDrawableNode generateNode(String label, Color color, int x, int y) {
+        OvalNetworkItem oval = new OvalNetworkItem(x,y);
+        oval.allowResizing(true);
+        oval.setHeight(50);
+        oval.setWidth(120);
+
+        DefaultDrawableNode node = new DefaultDrawableNode(label, oval);
+        node.setColor(color);
+        node.setLabelColor(Color.BLACK);
+        node.setFont(new Font(Font.MONOSPACED, Font.BOLD, 16));
+        return node;
     }
 
     private static List<PlayerClass> parsePlayers(String agentsFileName) throws FileNotFoundException {
@@ -355,8 +402,13 @@ public class Launcher extends Repast3Launcher {
         super.stopSimulation();
     }
 
-    public String getMAP() {
-        return MAP;
+    public static DefaultDrawableNode getNode(String label) {
+        for(DefaultDrawableNode node : nodes) {
+            if(node.getNodeLabel().equals(label)) {
+                return node;
+            }
+        }
+        return null;
     }
 
     public void setMAP(String MAP) {

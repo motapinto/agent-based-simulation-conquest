@@ -11,6 +11,7 @@ import gui.SwingGUIStats;
 import jade.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.lang.acl.ACLMessage;
+import uchicago.src.sim.network.DefaultDrawableNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +28,8 @@ public class Player extends Logger {
     private long moveTimeout = 0;
     public final int speedFactor;
 
+    DefaultDrawableNode myNode;
+
     private AID currentZone;
     private AID spawnZone;
     private List<AID> teamPlayers = new ArrayList<>();
@@ -39,6 +42,7 @@ public class Player extends Logger {
     private List<AID> enemyPlayersInZone = new ArrayList<>();
     private Map<AID, Integer> teamPlayersInZoneHealth = new HashMap<>();
     private InZoneBehaviour inZoneBehaviour;
+
 
     public Player(Team team, PlayerClass playerClass, SwingGUIGame swingGUIGame, SwingGUIStats swingGUIStats, int speedFactor) {
         super(swingGUIGame, swingGUIStats);
@@ -276,6 +280,10 @@ public class Player extends Logger {
         this.teamPlayersInZoneHealth = teamPlayersInZoneHealth;
     }
 
+    public DefaultDrawableNode getMyNode() {
+        return myNode;
+    }
+
     public long getMoveTimeout() {
         return moveTimeout;
     }
@@ -296,5 +304,9 @@ public class Player extends Logger {
         }
 
         return 100;
+    }
+
+    public void setNode(DefaultDrawableNode node) {
+        this.myNode = node;
     }
 }
