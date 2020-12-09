@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static PlayerBehaviours.HealingBehaviour.*;
+
 public class Player extends Logger {
     private int health;
     private final Team team;
@@ -56,7 +58,7 @@ public class Player extends Logger {
         switch (this.playerClass) {
             case ASSAULT:
                 this.velocity = MovingBehaviour.ASSAULT_VELOCITY;
-                this.health = HealingBehaviour.ASSAULT_HEALTH;
+                this.health = ASSAULT_HEALTH;
                 break;
             case MEDIC:
                 this.velocity = MovingBehaviour.MEDIC_VELOCITY;
@@ -295,12 +297,13 @@ public class Player extends Logger {
     public static int getMaxHealth(PlayerClass playerClass) {
         switch (playerClass) {
             case ASSAULT:
+                return ASSAULT_HEALTH;
             case SNIPER:
-                return 100;
+                return SNIPER_HEALTH;
             case MEDIC:
-                return 150;
+                return MEDIC_HEALTH;
             case DEFENDER:
-                return 200;
+                return DEFENDER_HEALTH;
         }
 
         return 100;

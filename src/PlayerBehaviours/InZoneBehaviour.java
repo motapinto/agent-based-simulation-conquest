@@ -37,7 +37,7 @@ public class InZoneBehaviour extends TickerBehaviour {
         this.attackingBehaviour = new AttackingBehaviour(this.agent);
 
         for(AID teamPlayer : this.agent.getTeamPlayersInZone()) {
-            this.agent.getTeamPlayersInZoneHealth().put(teamPlayer, MAX_HEALTH);
+            this.agent.getTeamPlayersInZoneHealth().put(teamPlayer, 0);
         }
     }
 
@@ -76,18 +76,8 @@ public class InZoneBehaviour extends TickerBehaviour {
                 this.agent.sendMessageToTeamMembersNotInZone(msg);
             }
 
-            /** Attack a random enemy player */
-            if(this.attackingBehaviour.canAttack() && enemiesInZone.size() != 0) {
-                int index = rand.nextInt(enemiesInZone.size());
-                AID selectedEnemy = enemiesInZone.get(index);
-
-                this.agent.removeBehaviour(this.attackingBehaviour);
-                this.attackingBehaviour = new AttackingBehaviour(this.agent, selectedEnemy);
-                this.agent.addBehaviour(this.attackingBehaviour);
-            }
-
             /** Heal the team player with the least health */
-            else if(this.agent.getPlayerClass() == MEDIC && teamPlayersInZone.size() != 0 &&
+            if(this.agent.getPlayerClass() == MEDIC && teamPlayersInZone.size() != 0 &&
                     (this.healingBehaviour == null || this.healingBehaviour.canHeal())) {
 
                 this.agent.getTeamPlayersInZoneHealth().put(this.agent.getAID(), Player.getMaxHealth(this.agent.getPlayerClass()) - this.agent.getHealth());
@@ -101,6 +91,16 @@ public class InZoneBehaviour extends TickerBehaviour {
                 this.agent.removeBehaviour(this.healingBehaviour);
                 this.healingBehaviour = new HealingBehaviour(this.agent, selectedAlly);
                 this.agent.addBehaviour(this.healingBehaviour);
+            }
+
+            /** Attack a random enemy player */
+            else if(this.attackingBehaviour.canAttack() && enemiesInZone.size() != 0) {
+                int index = rand.nextInt(enemiesInZone.size());
+                AID selectedEnemy = enemiesInZone.get(index);
+
+                this.agent.removeBehaviour(this.attackingBehaviour);
+                this.attackingBehaviour = new AttackingBehaviour(this.agent, selectedEnemy);
+                this.agent.addBehaviour(this.attackingBehaviour);
             }
 
         /** Should move to other zone */
