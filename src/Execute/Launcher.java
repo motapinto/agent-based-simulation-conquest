@@ -43,7 +43,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 
-public class Launcher extends Repast3Launcher {
+public class Launcher extends Repast3Launcher implements Runnable {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(Launcher.class.getName());
     private String MAP = "map1.txt", TEAM_AXIS = "team_1.txt", TEAM_ALLIED = "team_2.txt";
     private int INITIAL_TICKETS = 100, TIME = 100, SPEED_FACTOR = 5;
@@ -55,7 +55,7 @@ public class Launcher extends Repast3Launcher {
     private OpenSequenceGraph playerClassPoints;
     private DisplaySurface dsurf;
     private int WIDTH = 800, HEIGHT = 800;
-
+    private boolean stopSimulation = false;
 
     private GameServer gameServer;
     private List<Zone> zones;
@@ -79,10 +79,8 @@ public class Launcher extends Repast3Launcher {
     private int SNIPER_HEALTH = 100;
     private int DEFENDER_HEALTH = 200;
 
-    public static void main(String[] args) {
-        SimInit init = new SimInit();
-        Launcher l = new Launcher();
-        init.loadModel(l, null, false);
+    public Launcher(SwingGUIStats swingGUIStats){
+        this.swingGUIStats = swingGUIStats;
     }
 
     @Override
@@ -277,11 +275,6 @@ public class Launcher extends Repast3Launcher {
     }
 
     private void launchAgents(ContainerController container, List<Position> zonePositions, List<PlayerClass> alliedPlayersClass, List<PlayerClass> axisPlayersClass) throws StaleProxyException, FileNotFoundException {
-        if(swingGUIStats == null) {
-            swingGUIStats = new SwingGUIStats();
-            Thread threadStats = new Thread(swingGUIStats);
-            threadStats.start();
-        }
 
         if(swingGUIGame != null) {
             swingGUIGame.closeSwingGUI();
@@ -330,13 +323,6 @@ public class Launcher extends Repast3Launcher {
             axisPlayers.add(axisPlayer);
             agentsList.add(container.acceptNewAgent("axis-" + j + "-" + axisPlayersClass.get(j).toString().toLowerCase(), axisPlayer));
         }
-
-
-       /* DefaultDrawableNode to = nodes.get(0);
-        DefaultDrawableEdge edge = new DefaultDrawableEdge(nodes.get(1), to);
-        edge.setLabel("Attack");
-        edge.setColor(Color.RED);
-        nodes.get(1).addOutEdge(edge);*/
 
         for (AgentController agent : agentsList) {
             agent.start();
@@ -402,9 +388,8 @@ public class Launcher extends Repast3Launcher {
 
     @Override
     public void stopSimulation() {
+        this.stopSimulation = true;
         swingGUIGame.closeSwingGUI();
-        swingGUIStats.closeSwingGUI();
-
         super.stopSimulation();
     }
 
@@ -473,6 +458,10 @@ public class Launcher extends Repast3Launcher {
     public int getASSAULT_ATTACK_FACTOR() {
         return ASSAULT_ATTACK_FACTOR;
     }
+
+    public boolean isStopSimulation() { return stopSimulation; }
+
+    public GameServer getGameServer() { return gameServer; }
 
     public void setASSAULT_ATTACK_FACTOR(int ASSAULT_ATTACK_FACTOR) {
         this.ASSAULT_ATTACK_FACTOR = ASSAULT_ATTACK_FACTOR;
@@ -566,5 +555,11 @@ public class Launcher extends Repast3Launcher {
     public void setDEFENDER_HEALTH(int DEFENDER_HEALTH) {
         this.DEFENDER_HEALTH = DEFENDER_HEALTH;
         HealingBehaviour.DEFENDER_HEALTH = DEFENDER_HEALTH;
+    }
+
+    @Override
+    public void run() {
+        SimInit init = new SimInit();
+        init.loadModel(this, null, false);
     }
 }
