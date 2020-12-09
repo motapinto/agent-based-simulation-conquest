@@ -94,7 +94,7 @@ public class InZoneBehaviour extends TickerBehaviour {
                 AID selectedAlly = Collections.max(this.agent.getTeamPlayersInZoneHealth().entrySet(),
                         Comparator.comparingInt(Map.Entry::getValue)).getKey();
 
-                if (selectedAlly.equals(this.agent.getAID()) && this.agent.getHealth() == Player.getMaxHealth(this.agent.getPlayerClass())) {
+                if (this.agent.getTeamPlayersInZoneHealth().get(selectedAlly) == 0) {
                     return;
                 }
 
