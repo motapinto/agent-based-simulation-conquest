@@ -1,6 +1,5 @@
 package Execute;
 
-import PlayerBehaviours.AttackingBehaviour;
 import PlayerBehaviours.HealingBehaviour;
 import PlayerBehaviours.MovingBehaviour;
 import agents.GameServer;
@@ -18,7 +17,6 @@ import jade.core.ProfileImpl;
 import jade.util.ExtendedProperties;
 import jade.util.leap.Properties;
 import jade.wrapper.StaleProxyException;
-import org.w3c.dom.css.Rect;
 import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.AgentController;
@@ -27,8 +25,9 @@ import uchicago.src.sim.analysis.OpenSequenceGraph;
 import uchicago.src.sim.analysis.Sequence;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
-import uchicago.src.sim.gui.*;
-import uchicago.src.sim.network.DefaultDrawableEdge;
+import uchicago.src.sim.gui.DisplaySurface;
+import uchicago.src.sim.gui.Network2DDisplay;
+import uchicago.src.sim.gui.RectNetworkItem;
 import uchicago.src.sim.network.DefaultDrawableNode;
 
 import java.awt.*;
@@ -64,20 +63,12 @@ public class Launcher extends Repast3Launcher implements Runnable {
     private static List<DefaultDrawableNode> nodes;
 
     // Independent variables
-    private int MEDIC_ATTACK_FACTOR = 1;
-    private int ASSAULT_ATTACK_FACTOR = 1;
-    private int SNIPER_ATTACK_FACTOR = 1;
-    private int DEFENDER_ATTACK_FACTOR = 1;
+    public static double MEDIC_ATTACK_FACTOR = 0.6;
+    public static double ASSAULT_ATTACK_FACTOR = 1.3;
+    public static double SNIPER_ATTACK_FACTOR = 2;
+    public static double DEFENDER_ATTACK_FACTOR = 1;
 
-    private double MEDIC_VELOCITY = 1.7;
-    private double ASSAULT_VELOCITY = 2;
-    private double SNIPER_VELOCITY = 1.7;
-    private double DEFENDER_VELOCITY = 1.5;
 
-    private int MEDIC_HEALTH = 150;
-    private int ASSAULT_HEALTH = 100;
-    private int SNIPER_HEALTH = 100;
-    private int DEFENDER_HEALTH = 200;
 
     public Launcher(SwingGUIStats swingGUIStats){
         this.swingGUIStats = swingGUIStats;
@@ -402,6 +393,10 @@ public class Launcher extends Repast3Launcher implements Runnable {
         return null;
     }
 
+    public String getMAP() {
+        return this.MAP;
+    }
+
     public void setMAP(String MAP) {
         this.MAP = MAP;
     }
@@ -447,15 +442,15 @@ public class Launcher extends Repast3Launcher implements Runnable {
     }
 
     // Most important independent variables below
-    public int getMEDIC_ATTACK_FACTOR() {
+    public double getMEDIC_ATTACK_FACTOR() {
         return MEDIC_ATTACK_FACTOR;
     }
 
-    public void setMEDIC_ATTACK_FACTOR(int MEDIC_ATTACK_FACTOR) {
-        this.MEDIC_ATTACK_FACTOR = MEDIC_ATTACK_FACTOR;
+    public void setMEDIC_ATTACK_FACTOR(double MEDIC_ATTACK_FACTOR) {
+        Launcher.MEDIC_ATTACK_FACTOR = MEDIC_ATTACK_FACTOR;
     }
 
-    public int getASSAULT_ATTACK_FACTOR() {
+    public double getASSAULT_ATTACK_FACTOR() {
         return ASSAULT_ATTACK_FACTOR;
     }
 
@@ -463,97 +458,87 @@ public class Launcher extends Repast3Launcher implements Runnable {
 
     public GameServer getGameServer() { return gameServer; }
 
-    public void setASSAULT_ATTACK_FACTOR(int ASSAULT_ATTACK_FACTOR) {
-        this.ASSAULT_ATTACK_FACTOR = ASSAULT_ATTACK_FACTOR;
+    public void setASSAULT_ATTACK_FACTOR(double ASSAULT_ATTACK_FACTOR) {
+        Launcher.ASSAULT_ATTACK_FACTOR = ASSAULT_ATTACK_FACTOR;
     }
 
-    public int getSNIPER_ATTACK_FACTOR() {
+    public double getSNIPER_ATTACK_FACTOR() {
         return SNIPER_ATTACK_FACTOR;
     }
 
-    public void setSNIPER_ATTACK_FACTOR(int SNIPER_ATTACK_FACTOR) {
-        this.SNIPER_ATTACK_FACTOR = SNIPER_ATTACK_FACTOR;
-        AttackingBehaviour.SNIPER_ATTACK_FACTOR = SNIPER_ATTACK_FACTOR;
+    public void setSNIPER_ATTACK_FACTOR(double SNIPER_ATTACK_FACTOR) {
+        Launcher.SNIPER_ATTACK_FACTOR = SNIPER_ATTACK_FACTOR;
     }
 
-    public int getDEFENDER_ATTACK_FACTOR() {
+    public double getDEFENDER_ATTACK_FACTOR() {
         return DEFENDER_ATTACK_FACTOR;
     }
 
-    public void setDEFENDER_ATTACK_FACTOR(int DEFENDER_ATTACK_FACTOR) {
-        this.DEFENDER_ATTACK_FACTOR = DEFENDER_ATTACK_FACTOR;
-        AttackingBehaviour.DEFENDER_ATTACK_FACTOR = DEFENDER_ATTACK_FACTOR;
+    public void setDEFENDER_ATTACK_FACTOR(double DEFENDER_ATTACK_FACTOR) {
+        Launcher.DEFENDER_ATTACK_FACTOR = DEFENDER_ATTACK_FACTOR;
     }
 
     public double getMEDIC_VELOCITY() {
-        return MEDIC_VELOCITY;
+        return MovingBehaviour.MEDIC_VELOCITY;
     }
 
     public void setMEDIC_VELOCITY(double MEDIC_VELOCITY) {
-        this.MEDIC_VELOCITY = MEDIC_VELOCITY;
         MovingBehaviour.MEDIC_VELOCITY = MEDIC_VELOCITY;
     }
 
     public double getASSAULT_VELOCITY() {
-        return ASSAULT_VELOCITY;
+        return MovingBehaviour.ASSAULT_VELOCITY;
     }
 
     public void setASSAULT_VELOCITY(double ASSAULT_VELOCITY) {
-        this.ASSAULT_VELOCITY = ASSAULT_VELOCITY;
         MovingBehaviour.ASSAULT_VELOCITY = ASSAULT_VELOCITY;
     }
 
     public double getSNIPER_VELOCITY() {
-        return SNIPER_VELOCITY;
+        return MovingBehaviour.SNIPER_VELOCITY;
     }
 
     public void setSNIPER_VELOCITY(double SNIPER_VELOCITY) {
-        this.SNIPER_VELOCITY = SNIPER_VELOCITY;
         MovingBehaviour.SNIPER_VELOCITY = SNIPER_VELOCITY;
     }
 
     public double getDEFENDER_VELOCITY() {
-        return DEFENDER_VELOCITY;
+        return MovingBehaviour.DEFENDER_VELOCITY;
     }
 
     public void setDEFENDER_VELOCITY(double DEFENDER_VELOCITY) {
-        this.DEFENDER_VELOCITY = DEFENDER_VELOCITY;
         MovingBehaviour.DEFENDER_VELOCITY = DEFENDER_VELOCITY;
     }
 
     public int getMEDIC_HEALTH() {
-        return MEDIC_HEALTH;
+        return HealingBehaviour.MEDIC_HEALTH;
     }
 
     public void setMEDIC_HEALTH(int MEDIC_HEALTH) {
-        this.MEDIC_HEALTH = MEDIC_HEALTH;
         HealingBehaviour.MEDIC_HEALTH = MEDIC_HEALTH;
     }
 
     public int getASSAULT_HEALTH() {
-        return ASSAULT_HEALTH;
+        return HealingBehaviour.ASSAULT_HEALTH;
     }
 
     public void setASSAULT_HEALTH(int ASSAULT_HEALTH) {
-        this.ASSAULT_HEALTH = ASSAULT_HEALTH;
         HealingBehaviour.ASSAULT_HEALTH = ASSAULT_HEALTH;
     }
 
     public int getSNIPER_HEALTH() {
-        return SNIPER_HEALTH;
+        return HealingBehaviour.SNIPER_HEALTH;
     }
 
     public void setSNIPER_HEALTH(int SNIPER_HEALTH) {
-        this.SNIPER_HEALTH = SNIPER_HEALTH;
         HealingBehaviour.SNIPER_HEALTH = SNIPER_HEALTH;
     }
 
     public int getDEFENDER_HEALTH() {
-        return DEFENDER_HEALTH;
+        return HealingBehaviour.DEFENDER_HEALTH;
     }
 
     public void setDEFENDER_HEALTH(int DEFENDER_HEALTH) {
-        this.DEFENDER_HEALTH = DEFENDER_HEALTH;
         HealingBehaviour.DEFENDER_HEALTH = DEFENDER_HEALTH;
     }
 

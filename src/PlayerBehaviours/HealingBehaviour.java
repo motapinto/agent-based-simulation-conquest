@@ -17,15 +17,16 @@ import static data.MessageType.HEAL;
 
 public class HealingBehaviour extends WakerBehaviour {
     private final Player agent;
+    private int missingHP;
     private boolean canHeal;
 
-    private static final int MIN_HEAL = 50;
-    private static final int MAX_HEAL = 100;
-    private static final int HEALING_TIMEOUT = 5000;
+    private static final int MIN_HEAL = 25;
+    private static final int MAX_HEAL = 50;
+    private static final int HEALING_TIMEOUT = 8000;
 
     // Independent variables
     public static int MEDIC_HEALTH = 150;
-    public static int ASSAULT_HEALTH = 100;
+    public static int ASSAULT_HEALTH = 150;
     public static int SNIPER_HEALTH = 100;
     public static int DEFENDER_HEALTH = 200;
 
@@ -35,9 +36,10 @@ public class HealingBehaviour extends WakerBehaviour {
         this.canHeal = true;
     }
 
-    public HealingBehaviour(Player agent, AID ally) {
+    public HealingBehaviour(Player agent, AID ally, int missingHP) {
         super(agent, HEALING_TIMEOUT / agent.speedFactor);
         this.agent = agent;
+        this.missingHP = missingHP;
         this.heal(ally);
         this.canHeal = false;
     }
@@ -58,7 +60,7 @@ public class HealingBehaviour extends WakerBehaviour {
      */
     public void heal(AID ally) {
         Random rand = new Random();
-        int repairment = rand.nextInt(MAX_HEAL - MIN_HEAL + 1) + MIN_HEAL;
+        int repairment = Math.min(rand.nextInt(MAX_HEAL - MIN_HEAL + 1) + MIN_HEAL, this.missingHP);
 
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         PlayerActionMessage content = new PlayerActionMessage(PLAYER, HEAL, this.agent.getCurrentZone(), repairment);

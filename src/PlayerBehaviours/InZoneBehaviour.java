@@ -89,7 +89,7 @@ public class InZoneBehaviour extends TickerBehaviour {
                 }
 
                 this.agent.removeBehaviour(this.healingBehaviour);
-                this.healingBehaviour = new HealingBehaviour(this.agent, selectedAlly);
+                this.healingBehaviour = new HealingBehaviour(this.agent, selectedAlly, this.agent.getTeamPlayersInZoneHealth().get(selectedAlly));
                 this.agent.addBehaviour(this.healingBehaviour);
             }
 
@@ -175,8 +175,9 @@ public class InZoneBehaviour extends TickerBehaviour {
 
     private double valueOfBackup() {
         switch (this.agent.getPlayerClass()) {
-            case DEFENDER: return 0;
-            case SNIPER: case ASSAULT: case MEDIC: default: return 35;
+            case DEFENDER: return 50;
+            case MEDIC: return 35;
+            case SNIPER: case ASSAULT: default: return 15;
         }
     }
 

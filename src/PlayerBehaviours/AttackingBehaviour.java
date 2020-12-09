@@ -1,15 +1,14 @@
 package PlayerBehaviours;
 
 import Execute.Edge;
+import Execute.Launcher;
 import agents.Player;
 import data.Team;
 import data.message.PlayerActionMessage;
 import jade.core.AID;
-import sajas.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
-import uchicago.src.sim.network.DefaultDrawableEdge;
+import sajas.core.behaviours.WakerBehaviour;
 import uchicago.src.sim.network.DefaultDrawableNode;
-import uchicago.src.sim.network.DefaultEdge;
 
 import java.awt.*;
 import java.io.IOException;
@@ -31,12 +30,6 @@ public class AttackingBehaviour extends WakerBehaviour {
     private final static int ASSAULT_ATTACKING_ATTACK_TIMEOUT = 500;
     private final static int MEDIC_ATTACK_TIMEOUT = 1000;
     private final static int SNIPER_ATTACK_TIMEOUT = 2000;
-
-    // Independent variables
-    public static int ASSAULT_ATTACK_FACTOR = 1;
-    public static int DEFENDER_ATTACK_FACTOR = 1;
-    public static int MEDIC_ATTACK_FACTOR = 1;
-    public static int SNIPER_ATTACK_FACTOR = 3;
 
     public AttackingBehaviour(Player agent) {
         super(agent, 0);
@@ -91,7 +84,7 @@ public class AttackingBehaviour extends WakerBehaviour {
         // The player can miss the attack
         if(!rand.nextBoolean()) return;
 
-        int damage = this.getDamage(rand.nextInt(MAX_DMG - MIN_DMG + 1) + MIN_DMG);
+        int damage = (int) this.getDamage(rand.nextInt(MAX_DMG - MIN_DMG + 1) + MIN_DMG);
 
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         PlayerActionMessage content = new PlayerActionMessage(PLAYER, ATTACK, agent.getCurrentZone(), -damage);
@@ -121,12 +114,12 @@ public class AttackingBehaviour extends WakerBehaviour {
         }
     }
 
-    public int getDamage(int damage) {
+    public double getDamage(int damage) {
         switch (agent.getPlayerClass()) {
-            case ASSAULT: return damage * ASSAULT_ATTACK_FACTOR;
-            case DEFENDER: return damage * DEFENDER_ATTACK_FACTOR;
-            case MEDIC: return damage * MEDIC_ATTACK_FACTOR;
-            case SNIPER: return damage * SNIPER_ATTACK_FACTOR;
+            case ASSAULT: return damage * Launcher.ASSAULT_ATTACK_FACTOR;
+            case DEFENDER: return damage * Launcher.DEFENDER_ATTACK_FACTOR;
+            case MEDIC: return damage * Launcher.MEDIC_ATTACK_FACTOR;
+            case SNIPER: return damage * Launcher.SNIPER_ATTACK_FACTOR;
             default: return damage;
         }
     }

@@ -1,3 +1,4 @@
-sniper 3
+sniper 2
 assault 1
 medic 1
+defender 1
