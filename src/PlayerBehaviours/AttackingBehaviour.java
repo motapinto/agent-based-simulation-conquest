@@ -116,7 +116,7 @@ public class AttackingBehaviour extends WakerBehaviour {
             DefaultDrawableNode to = Execute.Launcher.getNode(agentName);
             Edge edge = new Edge(this.agent.getMyNode(), to);
             edge.setLabel("Attack");
-            edge.setColor(Color.YELLOW);
+            edge.setColor(Color.RED);
             this.agent.getMyNode().addOutEdge(edge);
         }
     }
