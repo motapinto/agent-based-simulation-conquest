@@ -83,6 +83,7 @@ public class HealingBehaviour extends WakerBehaviour {
             DefaultDrawableEdge edge = new DefaultDrawableEdge(this.agent.getMyNode(), to);
             edge.setLabel("HEAL");
             edge.setDrawDirected(true);
+            edge.setStrength(5);
             edge.setColor(Color.GREEN);
             this.agent.getMyNode().addOutEdge(edge);
         }

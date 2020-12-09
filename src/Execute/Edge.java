@@ -8,7 +8,7 @@ import uchicago.src.sim.network.Node;
 
 public class Edge extends DefaultEdge implements DrawableEdge {
     private Color color = Color.WHITE;
-    private static final float DEFAULT_STRENGTH = 1;
+    private static final float DEFAULT_STRENGTH = 5;
 
     public Edge() { }
 

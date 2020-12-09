@@ -46,7 +46,7 @@ import java.util.logging.Level;
 public class Launcher extends Repast3Launcher {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(Launcher.class.getName());
     private String MAP = "map1.txt", TEAM_AXIS = "team_1.txt", TEAM_ALLIED = "team_2.txt";
-    private int INITIAL_TICKETS = 100, TIME = 100, SPEED_FACTOR = 20;
+    private int INITIAL_TICKETS = 100, TIME = 100, SPEED_FACTOR = 5;
     private OpenSequenceGraph plot;
     private SwingGUIStats swingGUIStats;
     private SwingGUIGame swingGUIGame;
@@ -190,8 +190,8 @@ public class Launcher extends Repast3Launcher {
     private void buildDisplaySchedule() {
         // display surface
         if (dsurf != null) dsurf.dispose();
-        dsurf = new DisplaySurface(this, "Service Consumer/Provider Display");
-        registerDisplaySurface("Service Consumer/Provider Display", dsurf);
+        dsurf = new DisplaySurface(this, "Players Interaction Network Graph");
+        registerDisplaySurface("Players Interaction Network Graph", dsurf);
         Network2DDisplay display = new Network2DDisplay(nodes,WIDTH,HEIGHT);
         dsurf.addDisplayableProbeable(display, "Network Display");
         dsurf.addZoomable(display);

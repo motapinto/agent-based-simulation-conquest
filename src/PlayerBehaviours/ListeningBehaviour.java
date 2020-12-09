@@ -91,6 +91,8 @@ public class ListeningBehaviour extends CyclicBehaviour {
 
             /* Player to Player Messages */
             case ATTACK: case HEAL: {
+                this.removeEdge(msg.getSender().getLocalName());
+
                 PlayerActionMessage playerActionMessage;
                 try {
                     playerActionMessage = (PlayerActionMessage) msg.getContentObject();
@@ -98,9 +100,6 @@ public class ListeningBehaviour extends CyclicBehaviour {
                     e.printStackTrace();
                     return;
                 }
-
-
-                this.removeEdge(msg.getSender().getLocalName());
 
                 if(!playerActionMessage.getZone().equals(this.agent.getCurrentZone())) return;
                 int value = playerActionMessage.getActionValue();
