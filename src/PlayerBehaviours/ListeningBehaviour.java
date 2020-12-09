@@ -14,6 +14,7 @@ import jade.lang.acl.UnreadableException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import static data.AgentType.PLAYER;
 import static data.MessageType.ATTACK;
@@ -98,8 +99,8 @@ public class ListeningBehaviour extends CyclicBehaviour {
                     return;
                 }
 
-                if(simpleMessage.getMessageType().equals(ATTACK))
-                    this.removeEdge(msg.getSender().getLocalName());
+
+                this.removeEdge(msg.getSender().getLocalName());
 
                 if(!playerActionMessage.getZone().equals(this.agent.getCurrentZone())) return;
                 int value = playerActionMessage.getActionValue();
@@ -140,7 +141,7 @@ public class ListeningBehaviour extends CyclicBehaviour {
     }
 
     private void removeEdge(String agentName){
-        this.agent.getMyNode().removeEdgesTo(Launcher.getNode(agentName));
+        Objects.requireNonNull(Launcher.getNode(agentName)).removeEdgesTo(this.agent.getMyNode());
     }
 
     private void updateTimeout(PlayersInZoneMessage message) {

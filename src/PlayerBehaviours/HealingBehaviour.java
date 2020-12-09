@@ -5,7 +5,10 @@ import data.message.PlayerActionMessage;
 import jade.core.AID;
 import sajas.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
+import uchicago.src.sim.network.DefaultDrawableEdge;
+import uchicago.src.sim.network.DefaultDrawableNode;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.Random;
 
@@ -67,10 +70,22 @@ public class HealingBehaviour extends WakerBehaviour {
         }
 
         msg.addReceiver(ally);
+        this.sendMessageDrawEdge(ally.getLocalName());
         this.agent.send(msg);
         this.agent.setPoints(this.agent.getPoints() + repairment);
         this.agent.getSwingGUIGame().getTeamCompPanel().addUpdateTeamPlayer(this.agent.getTeam(), this.agent.getAID(), this.agent.getPoints(), this.agent.getPlayerClass());
         this.agent.logAction(this.agent.getLocalName() + " healing " + ally.getLocalName() + " for " + repairment + "hp");
+    }
+
+    public void sendMessageDrawEdge(String agentName){
+        if(this.agent.getMyNode() != null) {
+            DefaultDrawableNode to = Execute.Launcher.getNode(agentName);
+            DefaultDrawableEdge edge = new DefaultDrawableEdge(this.agent.getMyNode(), to);
+            edge.setLabel("HEAL");
+            edge.setDrawDirected(true);
+            edge.setColor(Color.GREEN);
+            this.agent.getMyNode().addOutEdge(edge);
+        }
     }
 
     public boolean canHeal() {
