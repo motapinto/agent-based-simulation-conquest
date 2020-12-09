@@ -313,7 +313,7 @@ public class Launcher extends Repast3Launcher {
         for (int j = 0; j < alliedPlayersClass.size(); j++) {
             Player alliedPlayer = new Player(Team.ALLIED, alliedPlayersClass.get(j), swingGUIGame, swingGUIStats, SPEED_FACTOR);
             DefaultDrawableNode node =
-                    generateNode("allied-" + j + "-" + alliedPlayersClass.get(j).toString().toLowerCase(), SwingGUIGame.GREEN, 100, (HEIGHT/alliedPlayersClass.size())*j);
+                    generateNode("allied-" + j + "-" + alliedPlayersClass.get(j).toString().toLowerCase(), SwingGUIGame.GREEN, (int) (90 + Math.random() * 30), (HEIGHT/alliedPlayersClass.size())*j);
             nodes.add(node);
             alliedPlayer.setNode(node);
             alliedPlayers.add(alliedPlayer);
@@ -324,7 +324,7 @@ public class Launcher extends Repast3Launcher {
         for (int j = 0; j < axisPlayersClass.size(); j++) {
             Player axisPlayer = new Player(Team.AXIS, axisPlayersClass.get(j), swingGUIGame, swingGUIStats, SPEED_FACTOR);
             DefaultDrawableNode node =
-                    generateNode("axis-" + j + "-" + axisPlayersClass.get(j).toString().toLowerCase(), SwingGUIGame.RED, WIDTH-200, (HEIGHT/alliedPlayersClass.size())*j);
+                    generateNode("axis-" + j + "-" + axisPlayersClass.get(j).toString().toLowerCase(), SwingGUIGame.RED, (int) (WIDTH- 190 - Math.random() * 30), (HEIGHT/alliedPlayersClass.size())*j);
             nodes.add(node);
             axisPlayer.setNode(node);
             axisPlayers.add(axisPlayer);

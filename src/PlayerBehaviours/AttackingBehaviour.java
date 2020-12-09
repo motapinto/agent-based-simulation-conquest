@@ -1,5 +1,6 @@
 package PlayerBehaviours;
 
+import Execute.Edge;
 import agents.Player;
 import data.Team;
 import data.message.PlayerActionMessage;
@@ -9,7 +10,6 @@ import jade.lang.acl.ACLMessage;
 import uchicago.src.sim.network.DefaultDrawableEdge;
 import uchicago.src.sim.network.DefaultDrawableNode;
 import uchicago.src.sim.network.DefaultEdge;
-import uchicago.src.sim.network.Edge;
 
 import java.awt.*;
 import java.io.IOException;
@@ -114,9 +114,8 @@ public class AttackingBehaviour extends WakerBehaviour {
     public void sendMessageDrawEdge(String agentName){
         if(this.agent.getMyNode() != null) {
             DefaultDrawableNode to = Execute.Launcher.getNode(agentName);
-            DefaultDrawableEdge edge = new DefaultDrawableEdge(this.agent.getMyNode(), to);
+            Edge edge = new Edge(this.agent.getMyNode(), to);
             edge.setLabel("Attack");
-            edge.setDrawDirected(true);
             edge.setColor(Color.YELLOW);
             this.agent.getMyNode().addOutEdge(edge);
         }
