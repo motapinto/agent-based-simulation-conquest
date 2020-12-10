@@ -1,0 +1,2 @@
+medic 3
+assault 2

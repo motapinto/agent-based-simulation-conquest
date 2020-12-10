@@ -1,0 +1,2 @@
+assault 2
+sniper 3
