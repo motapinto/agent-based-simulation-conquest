@@ -1,0 +1,3 @@
+assault 2
+medic 2
+sniper 1

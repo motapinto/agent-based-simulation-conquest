@@ -1,0 +1,2 @@
+medic 2
+defender 3

@@ -41,6 +41,8 @@ public class ZoneSubscriber extends SubscriptionInitiator {
             return;
         }
 
+        System.out.println(message);
+
         AID zone = message.getZone();
         double points = message.getCurrentCapturePoints();
         double prevPoints = this.agent.getCapturableZones().get(zone);
@@ -60,22 +62,26 @@ public class ZoneSubscriber extends SubscriptionInitiator {
             default: break;
         }
 
-        switch (message.getMessageType()) {
-            case CAPTURED: {
-                this.updatePoints(message);
+        if(message.getMessageType() == null) {
+            this.agent.getCapturableZones().put(zone, points);
+        } else {
+            switch (message.getMessageType()) {
+                case CAPTURED: {
+                    this.updatePoints(message);
 
-                if(message.getTeam() == Team.ALLIED && points == ALLIED_CAPTURED_POINTS) {
-                    this.agent.getCapturableZones().put(zone, ALLIED_CAPTURED_POINTS);
-                } else if(message.getTeam() == Team.AXIS && points == AXIS_CAPTURED_POINTS) {
-                    this.agent.getCapturableZones().put(zone, AXIS_CAPTURED_POINTS);
+                    if(message.getTeam() == Team.ALLIED && points == ALLIED_CAPTURED_POINTS) {
+                        this.agent.getCapturableZones().put(zone, ALLIED_CAPTURED_POINTS);
+                    } else if(message.getTeam() == Team.AXIS && points == AXIS_CAPTURED_POINTS) {
+                        this.agent.getCapturableZones().put(zone, AXIS_CAPTURED_POINTS);
+                    }
+
+                    break;
                 }
 
-                break;
-            }
-
-            case NEUTRAL: {
-                this.agent.getCapturableZones().put(zone, points);
-                break;
+                case NEUTRAL: {
+                    this.agent.getCapturableZones().put(zone, points);
+                    break;
+                }
             }
         }
     }

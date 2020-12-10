@@ -73,7 +73,7 @@ public class Zone extends Logger {
     public void init(){
         this.playerAgents = this.findPlayerAgents();
         if(this.zoneTeam == Team.NEUTRAL)
-            this.addBehaviour(new CapturingBehaviour(this, 250));
+            this.addBehaviour(new CapturingBehaviour(this, 1000));
         this.addBehaviour(new InformPositionBehaviour(this));
         this.swingGUIGame.getZoneMapPanel().addUpdateZone(this.getAID(), this.zoneTeam, this.position, this.capturePoints);
         this.swingGUIGame.getZoneInformationPanel().addUpdateNewZone(this.getAID(), this.zoneTeam, this.position);
