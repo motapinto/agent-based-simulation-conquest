@@ -87,6 +87,8 @@ public class MovingBehaviour extends WakerBehaviour {
             e.printStackTrace();
         }
 
+        this.cleanZoneInfo();
+
         msg.addReceiver(zone);
         this.agent.send(msg);
         this.agent.setCurrentZone(zone);

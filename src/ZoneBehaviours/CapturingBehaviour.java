@@ -4,9 +4,8 @@ import agents.Zone;
 import data.MessageType;
 import data.Team;
 import data.message.PlayerZoneMessage;
-import jade.core.AID;
-import sajas.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
+import sajas.core.behaviours.TickerBehaviour;
 import sajas.proto.SubscriptionResponder;
 
 import java.io.IOException;
@@ -39,7 +38,7 @@ public class CapturingBehaviour extends TickerBehaviour {
         }
 
         if(numberAlliedPlayers > numberAxisPlayers && team != ALLIED){
-            this.zoneAgent.increaseCapturePoints(numberAlliedPlayers - numberAxisPlayers);
+            this.zoneAgent.increaseCapturePoints(numberAlliedPlayers - numberAxisPlayers + 5);
             if(this.zoneAgent.getCapturePoints() >= maxValue) {
                 this.changeCapturedZone(maxValue, ALLIED);
                 this.informSubscribers(ALLIED, MessageType.CAPTURED);
@@ -49,7 +48,7 @@ public class CapturingBehaviour extends TickerBehaviour {
                 this.changeCapturedZone(0, NEUTRAL);
             }
         } else if(numberAlliedPlayers < numberAxisPlayers && team != Team.AXIS){
-            this.zoneAgent.decreaseCapturePoints(numberAxisPlayers - numberAlliedPlayers);
+            this.zoneAgent.decreaseCapturePoints(numberAxisPlayers - numberAlliedPlayers + 5);
             if(this.zoneAgent.getCapturePoints() <= minValue){
                 this.changeCapturedZone(minValue, AXIS);
                 this.informSubscribers(AXIS, MessageType.CAPTURED);
