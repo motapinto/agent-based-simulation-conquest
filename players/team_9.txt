@@ -1,2 +1,2 @@
-assault 2
-sniper 3
+assault 3
+sniper 2
