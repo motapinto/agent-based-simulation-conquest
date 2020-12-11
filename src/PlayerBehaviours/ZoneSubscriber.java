@@ -41,8 +41,6 @@ public class ZoneSubscriber extends SubscriptionInitiator {
             return;
         }
 
-        System.out.println(message);
-
         AID zone = message.getZone();
         double points = message.getCurrentCapturePoints();
         double prevPoints = this.agent.getCapturableZones().get(zone);

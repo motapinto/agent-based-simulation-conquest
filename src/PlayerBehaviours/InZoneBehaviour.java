@@ -128,7 +128,6 @@ public class InZoneBehaviour extends TickerBehaviour {
             if (zone == this.agent.getCurrentZone()) {
                 if(this.agent.getEnemyPlayersInZone().size() > 0 || (zonePoints < 100 && this.agent.getTeam() == Team.ALLIED)
                     || (zonePoints > -100 && this.agent.getTeam() == Team.AXIS)) {
-//                    System.out.println(this.agent.getAID().getName() + " " + this.agent.getEnemyPlayersInZone().size() + " " + zonePoints);
                     zonesUtility.put(zone, Double.MAX_VALUE);
                 }
                 else
